@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/padding_medium_large"
+    android:paddingRight="@dimen/padding_medium_large"
+    tools:context="co.uk.kenkwok.tulipmania.ui.main.MainActivity"
+    tools:deviceIds="wear">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/wear_price_label"
+        android:layout_centerHorizontal="true"
+        android:text="ANX Prices"/>
+
+    <TextView
+        android:id="@+id/buy_label"
+        style="@style/wear_price_label"
+        android:layout_below="@id/title"
+        android:text="Market Buy:"/>
+
+    <TextView
+        android:id="@+id/sell_label"
+        style="@style/wear_price_label"
+        android:layout_below="@id/buy_label"
+        android:text="Market Sell:"/>
+
+    <TextView
+        android:id="@+id/avr_label"
+        style="@style/wear_price_label"
+        android:layout_below="@id/sell_label"
+        android:text="Market Avr:"/>
+
+    <TextView
+        android:id="@+id/buy_price"
+        style="@style/wear_price_label.price"
+        android:layout_below="@+id/title"
+        android:layout_alignParentRight="true"
+        tools:text="USD3000" />
+
+    <TextView
+        android:id="@+id/sell_price"
+        style="@style/wear_price_label.price"
+        android:layout_below="@id/buy_price"
+        android:layout_alignParentRight="true"
+        tools:text="USD3000" />
+
+    <TextView
+        android:id="@+id/avr_price"
+        style="@style/wear_price_label.price"
+        android:layout_below="@id/sell_price"
+        android:layout_alignParentRight="true"
+        tools:text="USD3000" />
+</RelativeLayout>

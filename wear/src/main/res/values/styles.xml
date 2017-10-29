@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="wear_price_label">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/padding_xxsmall</item>
+        <item name="android:layout_marginBottom">@dimen/padding_xxsmall</item>
+    </style>
+
+    <style name="wear_price_label.price">
+        <item name="android:layout_marginLeft">@dimen/padding_small</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

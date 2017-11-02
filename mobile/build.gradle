@@ -40,11 +40,6 @@ dependencies {
         exclude group: 'com.google.code.findbugs'
     })
     wearApp project(':wear')
-    compile 'com.google.android.gms:play-services-wearable:10.2.1'
-    compile 'com.android.support:wear:26.0.2'
-    compile "com.google.android.support:wearable:$awVersion"
-    provided "com.google.android.support:wearable:$awVersion"
-    provided "com.google.android.wearable:wearable:$awVersion"
 
     compile 'com.android.support:appcompat-v7:26.0.2'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -72,6 +67,15 @@ dependencies {
     compile 'commons-codec:commons-codec:1.4'
     compile 'com.squareup.okhttp3:logging-interceptor:3.7.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            def requested = details.requested
+            if (requested.group == 'com.android.support') {
+                details.useVersion '26.0.2'
+            }
+        }
+    }
 }
 repositories {
     mavenCentral()

@@ -6,10 +6,9 @@ import com.google.gson.annotations.SerializedName
  * Created by kekwok on 18/09/2017.
  */
 
-class ApiCredentials {
+data class ApiCredentials(
     @SerializedName("api_key")
-    lateinit var apiKey: String
-
+    val apiKey: String,
     @SerializedName("api_secret")
-    lateinit var apiSecret: String
-}
+    val apiSecret: String
+)

@@ -1,34 +1,17 @@
 package co.uk.kenkwok.tulipmania.models
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-
-import java.io.Serializable
 
 /**
  * Created by kwokk on 17/04/2017.
  */
 
-class Buy : Serializable {
-
-    @SerializedName("currency")
-    @Expose
-    lateinit var currency: String
-    @SerializedName("display")
-    @Expose
-    lateinit var display: String
+data class Buy (
+    val currency: String,
+    val display: String,
     @SerializedName("display_short")
-    @Expose
-    lateinit var displayShort: String
-    @SerializedName("value")
-    @Expose
-    lateinit var value: String
+    val displayShort: String,
+    val value: String,
     @SerializedName("value_int")
-    @Expose
-    lateinit var valueInt: String
-
-    companion object {
-        private const val serialVersionUID = 8527530129998683225L
-    }
-
-}
+    val valueInt: String
+)

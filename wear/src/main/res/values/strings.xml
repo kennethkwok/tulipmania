@@ -3,4 +3,8 @@
 
     <!-- network endpoint -->
     <string name="base_url">https://anxpro.com/</string>
+
+    <!-- exchange price viewholder -->
+    <string name="price_high_label">24h high: </string>
+    <string name="price_low_label">24h low: </string>
 </resources>

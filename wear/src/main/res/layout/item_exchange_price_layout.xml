@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.wear.widget.BoxInsetLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="4dp"
+        app:boxedEdges="all">
+
+        <LinearLayout
+            android:id="@+id/main_price_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_alignParentTop="true"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/exchangeBuyPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                tools:text="$6,129.22" />
+
+            <ImageView
+                android:id="@+id/priceIndicatorImageView"
+                android:layout_width="20dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/up_arrow"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/price_high_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:layout_marginTop="8dp"
+            android:weightSum="2"
+            android:layout_below="@+id/main_price_layout">
+
+            <TextView
+                android:id="@+id/highPriceLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:text="@string/price_high_label"/>
+
+            <TextView
+                android:id="@+id/highPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                tools:text="$6,356.00"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/price_low_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:weightSum="2"
+            android:layout_below="@+id/price_high_layout">
+
+            <TextView
+                android:id="@+id/lowPriceLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:text="@string/price_low_label"/>
+
+            <TextView
+                android:id="@+id/lowPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                tools:text="$6,056.00"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/exchangeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            tools:text="ANXPro"/>
+
+    </RelativeLayout>
+
+</android.support.wear.widget.BoxInsetLayout>

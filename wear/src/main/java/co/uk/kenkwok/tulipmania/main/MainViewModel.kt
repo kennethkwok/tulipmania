@@ -38,12 +38,13 @@ class MainViewModel(private val networkService: NetworkService, private val apiC
 
     private fun getTicker() {
         val currencyPair = "BTCUSD"
+        val extraCcyPairs = "BTCHKD"
         val data = "/$currencyPair/money/ticker"
         val restSign = NetworkUtils.generateRestSign(apiCredentials.apiSecret, data.toByteArray())
 
         compositeDisposable?.add(
                 networkService
-                        .getTickerData(apiCredentials.apiKey, restSign, currencyPair)
+                        .getTickerData(apiCredentials.apiKey, restSign, currencyPair, extraCcyPairs)
                         .subscribe({ ticker -> tickerSubject.onNext(ticker) }) { throwable -> tickerSubject.onError(throwable) }
         )
     }

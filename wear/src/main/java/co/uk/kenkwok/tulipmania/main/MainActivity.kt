@@ -2,6 +2,7 @@ package co.uk.kenkwok.tulipmania.main
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.support.wearable.activity.WearableActivity
 import android.util.Log
 import android.widget.Toast
@@ -29,6 +30,7 @@ class MainActivity : WearableActivity() {
     private var googleApiClient: GoogleApiClient? = null
     private var nodeId: String? = null
     private var compositeDisposable: CompositeDisposable? = null
+    private var adapter = RecyclerViewAdapter(mutableListOf<Ticker>())
 
     /*
     Get reference to Wear
@@ -83,15 +85,17 @@ class MainActivity : WearableActivity() {
         compositeDisposable?.add(viewModel!!
                 .tickerObservable
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe({ ticker -> setPrice(ticker) }) { Toast.makeText(context, "Network Error", Toast.LENGTH_LONG).show() }
         )
+
+        pricesRecyclerview.layoutManager = LinearLayoutManager(this)
+        pricesRecyclerview.adapter = adapter
     }
 
     private fun setPrice(ticker: Ticker) {
-        buy_price.text = ticker.data.buy.displayShort
-        sell_price.text = ticker.data.sell.displayShort
-        avr_price.text = ticker.data.avg.displayShort
+        adapter.updateTicker(ticker)
+        adapter.notifyDataSetChanged()
     }
 
     override fun onDestroy() {
@@ -101,7 +105,6 @@ class MainActivity : WearableActivity() {
     }
 
     companion object {
-
         private val CONNECTION_TIME_OUT_MS: Long = 1000
     }
 }

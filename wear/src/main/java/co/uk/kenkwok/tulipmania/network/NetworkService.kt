@@ -1,5 +1,6 @@
 package co.uk.kenkwok.tulipmania.network
 
+import android.support.annotation.Nullable
 import co.uk.kenkwok.tulipmania.models.Ticker
 import io.reactivex.Observable
 
@@ -8,5 +9,5 @@ import io.reactivex.Observable
  */
 
 interface NetworkService {
-    fun getTickerData(apiKey: String, restSign: String, currencyPair: String): Observable<Ticker>
+    fun getTickerData(apiKey: String, restSign: String, currencyPair: String, @Nullable extraCcyPairs: String): Observable<Ticker>
 }

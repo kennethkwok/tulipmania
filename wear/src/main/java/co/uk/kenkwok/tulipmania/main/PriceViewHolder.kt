@@ -29,5 +29,6 @@ class PriceViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             arrowImageResource = R.drawable.down_arrow
         }
         view.priceIndicatorImageView.setImageResource(arrowImageResource)
+        view.priceIndicatorImageView.visibility = View.VISIBLE
     }
 }

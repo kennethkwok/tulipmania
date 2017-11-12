@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="4dp"
+        android:padding="0dp"
         app:boxedEdges="all">
 
         <LinearLayout
@@ -26,14 +26,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textSize="24sp"
+                android:textSize="26sp"
+                android:text="-"
                 tools:text="$6,129.22" />
 
             <ImageView
                 android:id="@+id/priceIndicatorImageView"
-                android:layout_width="20dp"
-                android:layout_height="30dp"
+                android:layout_width="18dp"
+                android:layout_height="26dp"
                 android:layout_gravity="center"
+                android:visibility="invisible"
+                tools:visibility="visible"
                 android:src="@drawable/up_arrow"/>
         </LinearLayout>
 
@@ -52,7 +55,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="14sp"
+                style="@style/wear_price_small_heading_label"
                 android:text="@string/price_high_label"/>
 
             <TextView
@@ -60,7 +63,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="14sp"
+                style="@style/wear_price_small_label"
+                android:text="-"
                 tools:text="$6,356.00"/>
         </LinearLayout>
 
@@ -78,7 +82,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="14sp"
+                style="@style/wear_price_small_heading_label"
                 android:text="@string/price_low_label"/>
 
             <TextView
@@ -86,7 +90,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="14sp"
+                style="@style/wear_price_small_label"
+                android:text="-"
                 tools:text="$6,056.00"/>
         </LinearLayout>
 

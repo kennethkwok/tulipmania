@@ -86,18 +86,25 @@ class MainActivity : WearableActivity() {
 
         initGoogleApiClient()
 
-        compositeDisposable?.add(viewModel!!
-                .tickerObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ ticker -> setPrice(ticker) }) { Toast.makeText(context, "Network Error", Toast.LENGTH_LONG).show() }
+        compositeDisposable?.addAll(
+                viewModel!!
+                    .tickerObservable
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ ticker -> setAnxPrice(ticker) }) { Toast.makeText(context, "Network Error", Toast.LENGTH_LONG).show() },
+                viewModel!!
+                    .getBitstampTicker()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({}, { Toast.makeText(context, "Network Error", Toast.LENGTH_LONG).show() })
+
         )
 
         pricesRecyclerview.layoutManager = LinearLayoutManager(this)
         pricesRecyclerview.adapter = adapter
     }
 
-    private fun setPrice(ticker: Ticker) {
+    private fun setAnxPrice(ticker: Ticker) {
         val priceItem = PriceItem(
                 exchangeName = ExchangeName.ANXPRO,
                 exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.data.btcusd.buy.displayShort),

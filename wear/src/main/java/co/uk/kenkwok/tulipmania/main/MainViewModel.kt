@@ -1,6 +1,7 @@
 package co.uk.kenkwok.tulipmania.main
 
 import co.uk.kenkwok.tulipmania.models.ApiCredentials
+import co.uk.kenkwok.tulipmania.models.BitstampTicker
 import co.uk.kenkwok.tulipmania.models.Ticker
 import co.uk.kenkwok.tulipmania.network.NetworkService
 import co.uk.kenkwok.tulipmania.utils.NetworkUtils
@@ -14,7 +15,7 @@ import io.reactivex.subjects.PublishSubject
 
 class MainViewModel(private val networkService: NetworkService, private val apiCredentials: ApiCredentials) {
 
-    private var compositeDisposable: CompositeDisposable? = null
+    private var compositeDisposable = CompositeDisposable()
     private val tickerSubject = PublishSubject.create<Ticker>()
 
     val tickerObservable: Observable<Ticker>
@@ -23,9 +24,8 @@ class MainViewModel(private val networkService: NetworkService, private val apiC
     fun onResume() {}
 
     fun onCreate() {
-        compositeDisposable = CompositeDisposable()
-
-        getTicker()
+        getAnxTicker()
+        getBitstampTicker()
     }
 
     fun onPause() {}
@@ -33,19 +33,24 @@ class MainViewModel(private val networkService: NetworkService, private val apiC
     fun onStop() {}
 
     fun onDestroy() {
-        compositeDisposable?.dispose()
+        compositeDisposable.dispose()
     }
 
-    private fun getTicker() {
+    private fun getAnxTicker() {
         val currencyPair = "BTCUSD"
         val extraCcyPairs = "BTCHKD"
         val data = "/$currencyPair/money/ticker"
         val restSign = NetworkUtils.generateRestSign(apiCredentials.apiSecret, data.toByteArray())
 
-        compositeDisposable?.add(
+        compositeDisposable.add(
                 networkService
-                        .getTickerData(apiCredentials.apiKey, restSign, currencyPair, extraCcyPairs)
+                        .getAnxTickerData(apiCredentials.apiKey, restSign, currencyPair, extraCcyPairs)
                         .subscribe({ ticker -> tickerSubject.onNext(ticker) }) { throwable -> tickerSubject.onError(throwable) }
         )
+    }
+
+    fun getBitstampTicker(): Observable<BitstampTicker> {
+        val currencyPair = "btcusd"
+        return networkService.getBitstampTickerData(currencyPair)
     }
 }

@@ -5,10 +5,14 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.wearable.activity.WearableActivity
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import butterknife.ButterKnife
 import co.uk.kenkwok.tulipmania.R
+import co.uk.kenkwok.tulipmania.models.ExchangeName
+import co.uk.kenkwok.tulipmania.models.PriceItem
 import co.uk.kenkwok.tulipmania.models.Ticker
+import co.uk.kenkwok.tulipmania.utils.CurrencyUtils
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.wearable.Wearable
 import dagger.android.AndroidInjection
@@ -30,7 +34,7 @@ class MainActivity : WearableActivity() {
     private var googleApiClient: GoogleApiClient? = null
     private var nodeId: String? = null
     private var compositeDisposable: CompositeDisposable? = null
-    private var adapter = RecyclerViewAdapter(mutableListOf<Ticker>())
+    private var adapter = RecyclerViewAdapter()
 
     /*
     Get reference to Wear
@@ -94,8 +98,15 @@ class MainActivity : WearableActivity() {
     }
 
     private fun setPrice(ticker: Ticker) {
-        adapter.updateTicker(ticker)
-        adapter.notifyDataSetChanged()
+        val priceItem = PriceItem(
+                exchangeName = ExchangeName.ANXPRO,
+                exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.data.btcusd.buy.displayShort),
+                twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.data.btcusd.high.displayShort),
+                twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.data.btcusd.low.displayShort))
+        adapter.updateAnxTicker(priceItem)
+
+        pricesRecyclerview.visibility = View.VISIBLE
+        loadingSpinner.visibility = View.GONE
     }
 
     override fun onDestroy() {

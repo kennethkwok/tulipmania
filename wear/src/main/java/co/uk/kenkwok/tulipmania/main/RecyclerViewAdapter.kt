@@ -4,34 +4,39 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import co.uk.kenkwok.tulipmania.R
-import co.uk.kenkwok.tulipmania.models.Ticker
+import co.uk.kenkwok.tulipmania.models.ExchangeName
+import co.uk.kenkwok.tulipmania.models.PriceItem
 
 /**
  * Created by kwokk on 01/11/2017.
  */
-class RecyclerViewAdapter(val tickerList: MutableList<Ticker>) : RecyclerView.Adapter<PriceViewHolder>() {
-    private var isArrowUp = false
+class RecyclerViewAdapter() : RecyclerView.Adapter<PriceViewHolder>() {
+    private var isAnxArrowUp = false
+    private val tickerList = ArrayList<PriceItem>()
 
-    fun updateTicker(ticker: Ticker) {
-        isArrowUp = false
+    fun updateAnxTicker(priceItem: PriceItem) {
+        isAnxArrowUp = false
+        val index = getPriceItemWithExchange(priceItem.exchangeName)
 
-        if (tickerList.size > 0) {
-            val oldTicker = tickerList.get(0)
+        if (index >= 0) {
+            val oldTicker = tickerList.get(index)
 
-            if (oldTicker.data.btcusd.buy.value.toDouble() <
-                    ticker.data.btcusd.buy.value.toDouble()) {
-                isArrowUp = true
+            if (oldTicker.exchangePrice.toDouble() <
+                    priceItem.exchangePrice.toDouble()) {
+                isAnxArrowUp = true
             }
-        }
 
-        tickerList.clear()
-        tickerList.add(ticker)
+            tickerList.set(index, priceItem)
+            notifyItemChanged(index)
+        } else {
+            tickerList.add(0, priceItem)
+            notifyItemChanged(0)
+        }
     }
 
     override fun onBindViewHolder(holder: PriceViewHolder, position: Int) {
-        holder.setData(exchangeLabel = "ANXPro",
-                currencyPair = tickerList.get(0).data.btcusd,
-                arrowIsUp = isArrowUp)
+        holder.setData(tickerList.get(position),
+                arrowIsUp = isAnxArrowUp)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PriceViewHolder {
@@ -41,5 +46,18 @@ class RecyclerViewAdapter(val tickerList: MutableList<Ticker>) : RecyclerView.Ad
 
     override fun getItemCount(): Int {
         return tickerList.size
+    }
+
+    /**
+     * Retrieves the PriceItem with the supplied exchange enum.
+     * Returns the index of the item, or -1 if item does not exist.
+     */
+    private fun getPriceItemWithExchange(name: ExchangeName): Int {
+        tickerList.forEachIndexed { index, priceItem ->
+            if (priceItem.exchangeName == name) {
+                return index
+            }
+        }
+        return -1
     }
 }

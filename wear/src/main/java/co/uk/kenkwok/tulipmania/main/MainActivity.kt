@@ -3,12 +3,14 @@ package co.uk.kenkwok.tulipmania.main
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.LinearSnapHelper
 import android.support.wearable.activity.WearableActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import butterknife.ButterKnife
 import co.uk.kenkwok.tulipmania.R
+import co.uk.kenkwok.tulipmania.models.BitstampTicker
 import co.uk.kenkwok.tulipmania.models.ExchangeName
 import co.uk.kenkwok.tulipmania.models.PriceItem
 import co.uk.kenkwok.tulipmania.models.Ticker
@@ -91,17 +93,38 @@ class MainActivity : WearableActivity() {
                     .tickerObservable
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
-                    .subscribe({ ticker -> setAnxPrice(ticker) }) { Toast.makeText(context, "Network Error", Toast.LENGTH_LONG).show() },
+                    .subscribe({ ticker -> setAnxPrice(ticker) }, {
+                        tr ->
+                        Log.e("ANX", "Error", tr)
+                        Toast.makeText(context, "Network Error", Toast.LENGTH_LONG).show() }),
                 viewModel!!
                     .getBitstampTicker()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
-                    .subscribe({}, { Toast.makeText(context, "Network Error", Toast.LENGTH_LONG).show() })
+                    .subscribe({ ticker -> setBitstampPrice(ticker) }, {
+                        tr ->
+                        Log.e("Bitstamp", "Error", tr)
+                        Toast.makeText(context, "Network Error", Toast.LENGTH_LONG).show()
+                    })
 
         )
 
-        pricesRecyclerview.layoutManager = LinearLayoutManager(this)
+        pricesRecyclerview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         pricesRecyclerview.adapter = adapter
+        LinearSnapHelper().attachToRecyclerView(pricesRecyclerview)
+    }
+
+    private fun setBitstampPrice(ticker: BitstampTicker) {
+        val priceItem = PriceItem(
+                exchangeName = ExchangeName.BITSTAMP,
+                exchangePrice = "$".plus(ticker.bid),
+                twentyFourHourHigh = "$".plus(ticker.high),
+                twentyFourHourLow = "$".plus(ticker.low)
+        )
+        adapter.updateBitstampTicker(priceItem)
+
+        pricesRecyclerview.visibility = View.VISIBLE
+        loadingSpinner.visibility = View.GONE
     }
 
     private fun setAnxPrice(ticker: Ticker) {

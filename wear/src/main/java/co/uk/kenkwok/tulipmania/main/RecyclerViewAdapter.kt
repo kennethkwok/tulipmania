@@ -12,6 +12,7 @@ import co.uk.kenkwok.tulipmania.models.PriceItem
  */
 class RecyclerViewAdapter() : RecyclerView.Adapter<PriceViewHolder>() {
     private var isAnxArrowUp = false
+    private var isBitstampArrowUp = false
     private val tickerList = ArrayList<PriceItem>()
 
     fun updateAnxTicker(priceItem: PriceItem) {
@@ -21,22 +22,47 @@ class RecyclerViewAdapter() : RecyclerView.Adapter<PriceViewHolder>() {
         if (index >= 0) {
             val oldTicker = tickerList.get(index)
 
-            if (oldTicker.exchangePrice.toDouble() <
-                    priceItem.exchangePrice.toDouble()) {
+            if (getExchangePrice(oldTicker.exchangePrice) <
+                    getExchangePrice(priceItem.exchangePrice)) {
                 isAnxArrowUp = true
             }
 
             tickerList.set(index, priceItem)
             notifyItemChanged(index)
         } else {
-            tickerList.add(0, priceItem)
-            notifyItemChanged(0)
+            tickerList.add(priceItem)
+            notifyItemChanged(tickerList.size - 1)
+        }
+    }
+
+    fun updateBitstampTicker(priceItem: PriceItem) {
+        isBitstampArrowUp = false
+        val index = getPriceItemWithExchange(priceItem.exchangeName)
+
+        if (index >= 0) {
+            val oldTicker = tickerList.get(index)
+
+            if (getExchangePrice(oldTicker.exchangePrice) <
+                    getExchangePrice(priceItem.exchangePrice)) {
+                isBitstampArrowUp = true
+            }
+
+            tickerList.set(index, priceItem)
+            notifyItemChanged(index)
+        } else {
+            tickerList.add(priceItem)
+            notifyItemChanged(tickerList.size - 1)
         }
     }
 
     override fun onBindViewHolder(holder: PriceViewHolder, position: Int) {
-        holder.setData(tickerList.get(position),
-                arrowIsUp = isAnxArrowUp)
+        if (tickerList.get(position).exchangeName == ExchangeName.ANXPRO) {
+            holder.setData(tickerList.get(position),
+                    arrowIsUp = isAnxArrowUp)
+        } else {
+            holder.setData(tickerList.get(position),
+                    arrowIsUp = isBitstampArrowUp)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PriceViewHolder {
@@ -59,5 +85,14 @@ class RecyclerViewAdapter() : RecyclerView.Adapter<PriceViewHolder>() {
             }
         }
         return -1
+    }
+
+    /**
+     * Removes the leading currency sign so price string can be converted in to a Double
+     * for comparison purposes
+     */
+    private fun getExchangePrice(price: String): Double {
+        val output = price.replace(",", "")
+        return output.substring(1, price.lastIndex).toDouble()
     }
 }

@@ -56,3 +56,5 @@ freeline_project_description.json
 mobile/src/main/assets/anx.json
 wear/src/main/assets/anx.json
 wear/src/main/assets/anx.json
+
+\.idea/modules\.xml

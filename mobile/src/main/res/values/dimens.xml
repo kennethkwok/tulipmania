@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- padding -->
+    <dimen name="padding_xxsmall">2dp</dimen>
+    <dimen name="padding_xsmall">4dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_medium_large">24dp</dimen>
+    <dimen name="padding_large">32dp</dimen>
+
+    <dimen name="textsize_xxlarge">28sp</dimen>
+    <dimen name="textsize_xlarge">24sp</dimen>
+    <dimen name="textsize_large">20sp</dimen>
+    <dimen name="textsize_medium">14sp</dimen>
+
+    <!-- cardview -->
+    <dimen name="cardview_elevation">4dp</dimen>
+</resources>

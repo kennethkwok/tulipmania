@@ -2,9 +2,11 @@ package co.uk.kenkwok.tulipmania.ui.main
 
 import co.uk.kenkwok.tulipmania.models.ApiCredentials
 import co.uk.kenkwok.tulipmania.models.CurrencyPair
-import co.uk.kenkwok.tulipmania.models.Ticker
+import co.uk.kenkwok.tulipmania.models.ExchangeName
+import co.uk.kenkwok.tulipmania.models.PriceItem
 import co.uk.kenkwok.tulipmania.network.NetworkService
 import co.uk.kenkwok.tulipmania.ui.base.BaseViewModel
+import co.uk.kenkwok.tulipmania.utils.CurrencyUtils
 import co.uk.kenkwok.tulipmania.utils.NetworkUtils
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -15,12 +17,11 @@ import io.reactivex.subjects.PublishSubject
 
 class MainViewModel(private val networkService: NetworkService, private val apiCredentials: ApiCredentials) : BaseViewModel() {
 
-    private val currencyPairSubject = PublishSubject.create<CurrencyPair>()
-    private var cachedTicker: Ticker? = null
+    private val priceItemSubject = PublishSubject.create<PriceItem>()
     private var displayHkd = false
 
-    val btcTickerObservable: Observable<CurrencyPair>
-        get() = currencyPairSubject.hide()
+    val btcTickerObservable: Observable<PriceItem>
+        get() = priceItemSubject.hide()
 
     override fun onCreate() {
         super.onCreate()
@@ -46,28 +47,23 @@ class MainViewModel(private val networkService: NetworkService, private val apiC
                         .getTickerData(apiCredentials.apiKey, restSign, currencyPair, extraCcyPairs)
                         .subscribe({ ticker ->
 
-                            currencyPairSubject.onNext(
+                            priceItemSubject.onNext(
                                     if (displayHkd) {
-                                        ticker.data.btchkd
+                                        convertCurrencyPairToPriceItem(ticker.data.btchkd)
                                     } else {
-                                        ticker.data.btcusd
+                                        convertCurrencyPairToPriceItem(ticker.data.btcusd)
                                     })
-
-                            cachedTicker = ticker
-                        }) { throwable -> currencyPairSubject.onError(throwable) }
+                        }) { throwable -> priceItemSubject.onError(throwable) }
         )
     }
 
-    fun displayHkdToggled(isChecked: Boolean) {
-        displayHkd = isChecked
-
-        if (cachedTicker != null) {
-            currencyPairSubject.onNext(
-                    if (displayHkd) {
-                        cachedTicker!!.data.btchkd
-                    } else {
-                        cachedTicker!!.data.btcusd
-                    })
-        }
+    private fun convertCurrencyPairToPriceItem(pair: CurrencyPair): PriceItem {
+        return PriceItem(
+                exchangeName = ExchangeName.ANXPRO,
+                exchangePrice = CurrencyUtils.convertDisplayCurrency(pair.sell.displayShort),
+                twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(pair.high.displayShort),
+                twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(pair.low.displayShort)
+        )
     }
+
 }

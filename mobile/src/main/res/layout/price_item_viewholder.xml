@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/padding_small"
-    android:elevation="@dimen/cardview_elevation">
+    android:elevation="@dimen/cardview_elevation"
+    tools:context="co.uk.kenkwok.tulipmania.ui.main.MainActivity">
 
     <LinearLayout 
         android:layout_width="match_parent"
@@ -26,7 +27,7 @@
             android:id="@+id/itemPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/textsize_xxlarge"
+            android:textSize="@dimen/textsize_xxxlarge"
             android:textStyle="bold"
             android:layout_gravity="center"
             android:layout_margin="@dimen/padding_xsmall"

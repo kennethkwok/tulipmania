@@ -2,10 +2,11 @@ package co.uk.kenkwok.tulipmania.ui.main
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import android.widget.Toast
-import butterknife.OnCheckedChanged
 import co.uk.kenkwok.tulipmania.R
-import co.uk.kenkwok.tulipmania.models.CurrencyPair
+import co.uk.kenkwok.tulipmania.models.PriceItem
 import co.uk.kenkwok.tulipmania.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
@@ -16,6 +17,8 @@ class MainActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModel: MainViewModel
+
+    private val adapter = RecyclerViewAdapter()
 
     override val layoutId = R.layout.activity_main
 
@@ -31,15 +34,29 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        initViews()
         initObservables()
         viewModel.onCreate()
+    }
+
+    private fun initViews() {
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = adapter
     }
 
     private fun initObservables() {
         compositeDisposable.add(
                 viewModel.btcTickerObservable
-                        .subscribe({ btcTicker -> setTicker(btcTicker) }) { displayError() })
+                        .subscribe({ priceItem ->
+                            setPriceItem(priceItem)
+                            if (loadingSpinner.visibility == View.VISIBLE) {
+                                loadingSpinner.visibility = View.GONE
+                                recyclerView.visibility = View.VISIBLE
+                            }
+                        })
+                        {
+                            displayError()
+                        })
     }
 
     override fun onDestroy() {
@@ -47,25 +64,12 @@ class MainActivity : BaseActivity() {
         viewModel.onDestroy()
     }
 
-    fun setTicker(btcTicker: CurrencyPair) {
-        buyTextView.text = btcTicker.buy.displayShort
-        sellTextView.text = btcTicker.sell.displayShort
-        lastTransactionTextView.text = btcTicker.last.displayShort
-        dailyLowTextView.text = btcTicker.low.displayShort
-        dailyHighTextView.text = btcTicker.high.displayShort
+    fun setPriceItem(item: PriceItem) {
+        adapter.updatePriceItem(item)
     }
 
     fun displayError() {
         Toast.makeText(this, "Error getting Ticker data", Toast.LENGTH_LONG).show()
-    }
-
-    @OnCheckedChanged(R.id.hkdSwitch)
-    fun hkdSwitchToggled(isChecked: Boolean) {
-        viewModel.displayHkdToggled(isChecked)
-    }
-
-    companion object {
-        val NOTIFICATION_ID = 100
     }
 
 }

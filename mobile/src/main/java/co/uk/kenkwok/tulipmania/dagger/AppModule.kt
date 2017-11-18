@@ -10,6 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -27,7 +28,20 @@ class AppModule {
 
     @Singleton
     @Provides
-    internal fun provideRetrofit(okHttpClient: OkHttpClient, baseUrl: String): Retrofit {
+    @Named("anxRetrofit")
+    internal fun provideAnxRetrofit(okHttpClient: OkHttpClient, @Named("anxBaseUrl") baseUrl: String): Retrofit {
+        return Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(okHttpClient)
+                .build()
+    }
+
+    @Singleton
+    @Provides
+    @Named("bitstampRetrofit")
+    internal fun provideBitstampRetrofit(okHttpClient: OkHttpClient, @Named("bitstampBaseUrl") baseUrl: String): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -50,7 +64,15 @@ class AppModule {
 
     @Singleton
     @Provides
-    internal fun getBaseUrl(context: Context): String {
-        return context.getString(R.string.base_url)
+    @Named("anxBaseUrl")
+    internal fun getAnxBaseUrl(context: Context): String {
+        return context.getString(R.string.anxpro_base_url)
+    }
+
+    @Singleton
+    @Provides
+    @Named("bitstampBaseUrl")
+    internal fun getBitstampBaseUrl(context: Context): String {
+        return context.getString(R.string.bitstamp_base_url)
     }
 }

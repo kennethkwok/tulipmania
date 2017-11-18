@@ -44,7 +44,7 @@ class MainViewModel(private val networkService: NetworkService, private val apiC
 
         compositeDisposable?.add(
                 networkService
-                        .getTickerData(apiCredentials.apiKey, restSign, currencyPair, extraCcyPairs)
+                        .getAnxTickerData(apiCredentials.apiKey, restSign, currencyPair, extraCcyPairs)
                         .subscribe({ ticker ->
 
                             priceItemSubject.onNext(

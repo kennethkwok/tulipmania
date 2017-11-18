@@ -6,6 +6,7 @@ import co.uk.kenkwok.tulipmania.network.NetworkServiceImpl
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
+import javax.inject.Named
 
 /**
  * Created by kekwok on 18/09/2017.
@@ -18,7 +19,7 @@ class MainActivityModule {
     }
 
     @Provides
-    internal fun provideNetworkService(retrofit: Retrofit): NetworkService {
-        return NetworkServiceImpl(retrofit)
+    internal fun provideNetworkService(@Named("anxRetrofit") anxRetrofit: Retrofit, @Named("bitstampRetrofit") bitstampRetrofit: Retrofit): NetworkService {
+        return NetworkServiceImpl(anxRetrofit, bitstampRetrofit)
     }
 }

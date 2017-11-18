@@ -2,7 +2,8 @@
     <string name="app_name">Tulipmania</string>
 
     <!-- network endpoint -->
-    <string name="base_url">https://anxpro.com/</string>
+    <string name="anxpro_base_url">https://anxpro.com/</string>
+    <string name="bitstamp_base_url">https://www.bitstamp.net/</string>
 
     <!-- price item viewholder -->
     <string name="twenty_four_hour_high">24h high: %1$s</string>

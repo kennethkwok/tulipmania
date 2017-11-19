@@ -45,18 +45,29 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initObservables() {
-        compositeDisposable.add(
-                viewModel.btcTickerObservable
+        compositeDisposable.addAll(
+                viewModel.anxTickerObservable
                         .subscribe({ priceItem ->
                             setPriceItem(priceItem)
-                            if (loadingSpinner.visibility == View.VISIBLE) {
-                                loadingSpinner.visibility = View.GONE
-                                recyclerView.visibility = View.VISIBLE
-                            }
-                        })
-                        {
+                            hideLoadingSpinner()
+                        }, {
+                            displayError()
+                        }),
+                viewModel.bitstampTickerObservable
+                        .subscribe({ priceItem ->
+                            setPriceItem(priceItem)
+                            hideLoadingSpinner()
+                        }, {
                             displayError()
                         })
+        )
+    }
+
+    private fun hideLoadingSpinner() {
+        if (loadingSpinner.visibility == View.VISIBLE) {
+            loadingSpinner.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroy() {

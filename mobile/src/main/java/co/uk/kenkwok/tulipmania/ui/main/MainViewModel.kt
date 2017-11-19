@@ -17,15 +17,20 @@ import io.reactivex.subjects.PublishSubject
 
 class MainViewModel(private val networkService: NetworkService, private val apiCredentials: ApiCredentials) : BaseViewModel() {
 
-    private val priceItemSubject = PublishSubject.create<PriceItem>()
+    private val anxPriceItemSubject = PublishSubject.create<PriceItem>()
+    private val bitstampPriceItemSubject = PublishSubject.create<PriceItem>()
     private var displayHkd = false
 
-    val btcTickerObservable: Observable<PriceItem>
-        get() = priceItemSubject.hide()
+    val anxTickerObservable: Observable<PriceItem>
+        get() = anxPriceItemSubject.hide()
+
+    val bitstampTickerObservable: Observable<PriceItem>
+        get() = bitstampPriceItemSubject.hide()
 
     override fun onCreate() {
         super.onCreate()
-        getTicker()
+        getAnxTicker()
+        getBitstampTicker()
     }
 
     override fun onResume() {
@@ -36,7 +41,27 @@ class MainViewModel(private val networkService: NetworkService, private val apiC
         super.onPause()
     }
 
-    private fun getTicker() {
+    private fun getBitstampTicker() {
+        val currencyPair = "btcusd"
+        compositeDisposable?.add(
+                networkService
+                        .getBitstampTickerData(currencyPair)
+                        .subscribe (
+                                { ticker ->
+                                    val priceItem = PriceItem(
+                                            exchangeName = ExchangeName.BITSTAMP,
+                                            exchangePrice = "$".plus(ticker.bid),
+                                            twentyFourHourHigh = "$".plus(ticker.high),
+                                            twentyFourHourLow = "$".plus(ticker.low)
+                                    )
+                                    bitstampPriceItemSubject.onNext(priceItem) },
+                                { throwable ->
+                                    bitstampPriceItemSubject.onError(throwable)
+                                })
+        )
+    }
+
+    private fun getAnxTicker() {
         val currencyPair = "BTCUSD"
         val extraCcyPairs = "BTCHKD"
         val data = "/$currencyPair/money/ticker"
@@ -47,13 +72,13 @@ class MainViewModel(private val networkService: NetworkService, private val apiC
                         .getAnxTickerData(apiCredentials.apiKey, restSign, currencyPair, extraCcyPairs)
                         .subscribe({ ticker ->
 
-                            priceItemSubject.onNext(
+                            anxPriceItemSubject.onNext(
                                     if (displayHkd) {
                                         convertCurrencyPairToPriceItem(ticker.data.btchkd)
                                     } else {
                                         convertCurrencyPairToPriceItem(ticker.data.btcusd)
                                     })
-                        }) { throwable -> priceItemSubject.onError(throwable) }
+                        }) { throwable -> anxPriceItemSubject.onError(throwable) }
         )
     }
 

@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.price_item_viewholder.view.*
 /**
  * Created by kwokk on 17/11/2017.
  */
-class RecyclerViewAdapter() : RecyclerView.Adapter<RecyclerViewAdapter.PriceItemViewHolder>() {
+class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.PriceItemViewHolder>() {
     private var exchangeList = ArrayList<PriceItem>()
 
     fun updatePriceItem(item: PriceItem) {

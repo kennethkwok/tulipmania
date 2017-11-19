@@ -7,11 +7,17 @@ import java.text.DecimalFormat
  */
 class CurrencyUtils {
     companion object {
+        private val df = DecimalFormat("###,###.00")
+
+        /**
+         * Converts amount returned by ticker API to preferred DecimalFormat string.
+         * Currently only supports USD or HKD.
+         */
         fun convertDisplayCurrency(displayCurrency: String) : String {
             if (displayCurrency.endsWith(" usd", true) ||
                     displayCurrency.endsWith(" hkd", true)) {
                 val strList = displayCurrency.split(" ")
-                return "$".plus(formatSeparatorsAndDecimals(strList[0]))
+                return formatSeparatorsAndDecimals(strList[0])
             } else {
                 return formatSeparatorsAndDecimals(displayCurrency)
             }
@@ -22,7 +28,7 @@ class CurrencyUtils {
          */
         private fun formatSeparatorsAndDecimals(amount: String): String {
             var amount = amount.replace(",", "")
-            return DecimalFormat("###,###.00").format(amount.toDouble())
+            return "$".plus(df.format(amount.toDouble()))
         }
     }
 }

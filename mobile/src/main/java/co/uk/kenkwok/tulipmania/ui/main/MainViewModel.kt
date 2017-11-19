@@ -20,7 +20,6 @@ class MainViewModel(private val networkService: NetworkService, private val apiC
     private val anxPriceItemSubject = PublishSubject.create<PriceItem>()
     private val bitstampPriceItemSubject = PublishSubject.create<PriceItem>()
     private val bitfinexPriceItemSubject = PublishSubject.create<PriceItem>()
-    private var displayHkd = false
 
     val anxTickerObservable: Observable<PriceItem>
         get() = anxPriceItemSubject.hide()
@@ -55,9 +54,9 @@ class MainViewModel(private val networkService: NetworkService, private val apiC
                                 { ticker ->
                                     val priceItem = PriceItem(
                                             exchangeName = ExchangeName.BITFINEX,
-                                            exchangePrice = "$".plus(CurrencyUtils.convertDisplayCurrency(ticker.bid)),
-                                            twentyFourHourHigh = "$".plus(CurrencyUtils.convertDisplayCurrency(ticker.high)),
-                                            twentyFourHourLow = "$".plus(CurrencyUtils.convertDisplayCurrency(ticker.low))
+                                            exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
+                                            twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),
+                                            twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low)
                                     )
                                     bitfinexPriceItemSubject.onNext(priceItem) },
                                 { throwable ->
@@ -75,9 +74,9 @@ class MainViewModel(private val networkService: NetworkService, private val apiC
                                 { ticker ->
                                     val priceItem = PriceItem(
                                             exchangeName = ExchangeName.BITSTAMP,
-                                            exchangePrice = "$".plus(CurrencyUtils.convertDisplayCurrency(ticker.bid)),
-                                            twentyFourHourHigh = "$".plus(CurrencyUtils.convertDisplayCurrency(ticker.high)),
-                                            twentyFourHourLow = "$".plus(CurrencyUtils.convertDisplayCurrency(ticker.low))
+                                            exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
+                                            twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),
+                                            twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low)
                                     )
                                     bitstampPriceItemSubject.onNext(priceItem) },
                                 { throwable ->
@@ -96,14 +95,11 @@ class MainViewModel(private val networkService: NetworkService, private val apiC
                 networkService
                         .getAnxTickerData(apiCredentials.apiKey, restSign, currencyPair, extraCcyPairs)
                         .subscribe({ ticker ->
-
                             anxPriceItemSubject.onNext(
-                                    if (displayHkd) {
-                                        convertCurrencyPairToPriceItem(ticker.data.btchkd)
-                                    } else {
-                                        convertCurrencyPairToPriceItem(ticker.data.btcusd)
-                                    })
-                        }) { throwable -> anxPriceItemSubject.onError(throwable) }
+                                convertCurrencyPairToPriceItem(ticker.data.btcusd))
+                        }, { throwable ->
+                            anxPriceItemSubject.onError(throwable)
+                        })
         )
     }
 

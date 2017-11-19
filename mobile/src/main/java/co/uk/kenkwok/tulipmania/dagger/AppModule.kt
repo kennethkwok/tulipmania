@@ -52,6 +52,18 @@ class AppModule {
 
     @Singleton
     @Provides
+    @Named("bitfinexRetrofit")
+    internal fun provideBitfinexRetrofit(okHttpClient: OkHttpClient, @Named("bitfinexBaseUrl") baseUrl: String): Retrofit {
+        return Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(okHttpClient)
+                .build()
+    }
+
+    @Singleton
+    @Provides
     internal fun provideHttpClient(interceptor: HttpLoggingInterceptor): OkHttpClient {
         return OkHttpClient.Builder().addInterceptor(interceptor).build()
     }
@@ -74,5 +86,12 @@ class AppModule {
     @Named("bitstampBaseUrl")
     internal fun getBitstampBaseUrl(context: Context): String {
         return context.getString(R.string.bitstamp_base_url)
+    }
+
+    @Singleton
+    @Provides
+    @Named("bitfinexBaseUrl")
+    internal fun getBitfinexBaseUrl(context: Context): String {
+        return context.getString(R.string.bitfinex_base_url)
     }
 }

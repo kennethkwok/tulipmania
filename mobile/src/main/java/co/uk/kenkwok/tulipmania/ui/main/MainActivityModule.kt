@@ -19,7 +19,9 @@ class MainActivityModule {
     }
 
     @Provides
-    internal fun provideNetworkService(@Named("anxRetrofit") anxRetrofit: Retrofit, @Named("bitstampRetrofit") bitstampRetrofit: Retrofit): NetworkService {
-        return NetworkServiceImpl(anxRetrofit, bitstampRetrofit)
+    internal fun provideNetworkService(@Named("anxRetrofit") anxRetrofit: Retrofit,
+                                       @Named("bitstampRetrofit") bitstampRetrofit: Retrofit,
+                                       @Named("bitfinexRetrofit") bitfinexRetrofit: Retrofit): NetworkService {
+        return NetworkServiceImpl(anxRetrofit, bitstampRetrofit, bitfinexRetrofit)
     }
 }

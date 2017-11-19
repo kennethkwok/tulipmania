@@ -3,6 +3,7 @@ package co.uk.kenkwok.tulipmania.ui.main
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import co.uk.kenkwok.tulipmania.R
@@ -51,14 +52,21 @@ class MainActivity : BaseActivity() {
                             setPriceItem(priceItem)
                             hideLoadingSpinner()
                         }, {
-                            displayError()
+                            t -> displayError(t)
                         }),
                 viewModel.bitstampTickerObservable
                         .subscribe({ priceItem ->
                             setPriceItem(priceItem)
                             hideLoadingSpinner()
                         }, {
-                            displayError()
+                            t -> displayError(t)
+                        }),
+                viewModel.bitfinexTickerObservable
+                        .subscribe({ priceItem ->
+                            setPriceItem(priceItem)
+                            hideLoadingSpinner()
+                        }, {
+                            t -> displayError(t)
                         })
         )
     }
@@ -79,8 +87,12 @@ class MainActivity : BaseActivity() {
         adapter.updatePriceItem(item)
     }
 
-    fun displayError() {
+    fun displayError(t: Throwable) {
+        Log.e(TAG, t.message)
         Toast.makeText(this, "Error getting Ticker data", Toast.LENGTH_LONG).show()
     }
 
+    companion object {
+        val TAG = "MainActivity"
+    }
 }

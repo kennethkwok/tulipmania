@@ -1,6 +1,7 @@
 package co.uk.kenkwok.tulipmania.network
 
 import android.support.annotation.Nullable
+import co.uk.kenkwok.tulipmania.models.BitfinexTicker
 import co.uk.kenkwok.tulipmania.models.BitstampTicker
 import co.uk.kenkwok.tulipmania.models.Ticker
 import io.reactivex.Observable
@@ -14,10 +15,13 @@ import javax.inject.Named
  * Created by kwokk on 17/04/2017.
  */
 
-class NetworkServiceImpl(@Named("anxRetrofit") anxRetrofit: Retrofit, @Named("bitstampRetrofit") bitstampRetrofit: Retrofit) : NetworkService {
+class NetworkServiceImpl(@Named("anxRetrofit") anxRetrofit: Retrofit,
+                         @Named("bitstampRetrofit") bitstampRetrofit: Retrofit,
+                         @Named("bitfinexRetrofit") bitfinexRetrofit: Retrofit) : NetworkService {
 
     private val anxService = anxRetrofit.create(ANXApi::class.java)
     private val bitstampService = bitstampRetrofit.create(BitstampAPI::class.java)
+    private val bitfinexService = bitfinexRetrofit.create(BitfinexAPI::class.java)
 
     /**
      * Gets the most recent ticker data every 15 seconds
@@ -45,6 +49,22 @@ class NetworkServiceImpl(@Named("anxRetrofit") anxRetrofit: Retrofit, @Named("bi
         return Observable.interval(0, TICKER_INTERVAL, TimeUnit.SECONDS, Schedulers.io())
                 .flatMap {
                     bitstampService
+                            .getMarketTickerObservable(currencyPair)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+    }
+
+    /**
+     * Gets the most recent Bitfinex ticker data every 15 seconds
+     * @param currencyPair btcusd
+     */
+    override fun getBitfinexTickerData(currencyPair: String): Observable<BitfinexTicker> {
+        return Observable.interval(0, TICKER_INTERVAL, TimeUnit.SECONDS, Schedulers.io())
+                .flatMap {
+                    bitfinexService
                             .getMarketTickerObservable(currencyPair)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())

@@ -4,6 +4,7 @@
     <!-- network endpoint -->
     <string name="anxpro_base_url">https://anxpro.com/</string>
     <string name="bitstamp_base_url">https://www.bitstamp.net/</string>
+    <string name="bitfinex_base_url">https://api.bitfinex.com/</string>
 
     <!-- price item viewholder -->
     <string name="twenty_four_hour_high">24h high: %1$s</string>

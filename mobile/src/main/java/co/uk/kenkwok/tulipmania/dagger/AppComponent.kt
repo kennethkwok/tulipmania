@@ -2,7 +2,6 @@ package co.uk.kenkwok.tulipmania.dagger
 
 import android.app.Application
 import co.uk.kenkwok.tulipmania.TulipManiaApplication
-import co.uk.kenkwok.tulipmania.utils.JsonUtils
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -14,7 +13,7 @@ import javax.inject.Singleton
  */
 
 @Singleton
-@Component(modules = arrayOf(AndroidInjectionModule::class, AppModule::class, BuildersModule::class, JsonUtils::class))
+@Component(modules = arrayOf(AndroidInjectionModule::class, AppModule::class, BuildersModule::class))
 interface AppComponent {
     @Component.Builder
     interface Builder {

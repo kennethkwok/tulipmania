@@ -1,6 +1,6 @@
 package co.uk.kenkwok.tulipmania.ui.main
 
-import co.uk.kenkwok.tulipmania.models.ApiCredentials
+import android.content.Context
 import co.uk.kenkwok.tulipmania.network.NetworkService
 import co.uk.kenkwok.tulipmania.network.NetworkServiceImpl
 import dagger.Module
@@ -14,8 +14,8 @@ import javax.inject.Named
 @Module
 class MainActivityModule {
     @Provides
-    internal fun provideMainViewModel(networkService: NetworkService, apiCredentials: ApiCredentials): MainViewModel {
-        return MainViewModel(networkService, apiCredentials)
+    internal fun provideMainViewModel(networkService: NetworkService, context: Context): MainViewModel {
+        return MainViewModel(networkService, context)
     }
 
     @Provides

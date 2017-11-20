@@ -1,11 +1,12 @@
 package co.uk.kenkwok.tulipmania.ui.main
 
-import co.uk.kenkwok.tulipmania.models.ApiCredentials
+import android.content.Context
 import co.uk.kenkwok.tulipmania.models.CurrencyPair
 import co.uk.kenkwok.tulipmania.models.ExchangeName
 import co.uk.kenkwok.tulipmania.models.PriceItem
 import co.uk.kenkwok.tulipmania.network.NetworkService
 import co.uk.kenkwok.tulipmania.ui.base.BaseViewModel
+import co.uk.kenkwok.tulipmania.utils.ANXCredentialUtils
 import co.uk.kenkwok.tulipmania.utils.CurrencyUtils
 import co.uk.kenkwok.tulipmania.utils.NetworkUtils
 import io.reactivex.Observable
@@ -15,8 +16,7 @@ import io.reactivex.subjects.PublishSubject
  * Created by kekwok on 18/09/2017.
  */
 
-class MainViewModel(private val networkService: NetworkService, private val apiCredentials: ApiCredentials) : BaseViewModel() {
-
+class MainViewModel(private val networkService: NetworkService, private val context: Context) : BaseViewModel() {
     private val anxPriceItemSubject = PublishSubject.create<PriceItem>()
     private val bitstampPriceItemSubject = PublishSubject.create<PriceItem>()
     private val bitfinexPriceItemSubject = PublishSubject.create<PriceItem>()
@@ -89,6 +89,7 @@ class MainViewModel(private val networkService: NetworkService, private val apiC
         val currencyPair = "BTCUSD"
         val extraCcyPairs = "BTCHKD"
         val data = "/$currencyPair/money/ticker"
+        val apiCredentials = ANXCredentialUtils.getApiCredentials(context)
         val restSign = NetworkUtils.generateRestSign(apiCredentials.apiSecret, data.toByteArray())
 
         compositeDisposable?.add(

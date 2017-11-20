@@ -1,6 +1,7 @@
 package co.uk.kenkwok.tulipmania.utils
 
 import android.content.Context
+import co.uk.kenkwok.tulipmania.BuildConfig
 import co.uk.kenkwok.tulipmania.models.ApiCredentials
 
 /**
@@ -12,8 +13,8 @@ class ANXCredentialUtils {
     companion object {
         fun getApiCredentials(context: Context): ApiCredentials {
             return ApiCredentials(
-                    apiKey = System.getenv("ANX_KEY"),
-                    apiSecret = System.getenv("ANX_SECRET")
+                    apiKey = BuildConfig.ANX_KEY,
+                    apiSecret = BuildConfig.ANX_SECRET
             )
         }
     }

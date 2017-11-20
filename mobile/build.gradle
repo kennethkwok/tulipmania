@@ -29,6 +29,8 @@ android {
         demo {
             dimension 'default'
             applicationIdSuffix ".demo"
+            buildConfigField 'String', 'ANX_KEY', System.getenv("ANX_KEY")
+            buildConfigField 'String', 'ANX_SECRET', System.getenv("ANX_SECRET")
         }
     }
     packagingOptions {

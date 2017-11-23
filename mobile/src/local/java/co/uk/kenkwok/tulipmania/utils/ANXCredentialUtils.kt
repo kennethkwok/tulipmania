@@ -11,28 +11,25 @@ import java.nio.charset.Charset
  * Created by kekwok on 18/09/2017.
  */
 
-class ANXCredentialUtils {
+object ANXCredentialUtils {
+    private val tag = ANXCredentialUtils::class.java.simpleName
 
-    companion object {
-        private val tag = ANXCredentialUtils::class.java.simpleName
+    fun getApiCredentials(context: Context): ApiCredentials {
+        val json = getJSONFromAssets(context, "anx.json")
+        return Gson().fromJson(json, ApiCredentials::class.java)
+    }
 
-        fun getApiCredentials(context: Context): ApiCredentials {
-            val json = getJSONFromAssets(context, "anx.json")
-            return Gson().fromJson(json, ApiCredentials::class.java)
-        }
-
-        private fun getJSONFromAssets(context: Context, filename: String): String {
-            try {
-                val inputStream = context.assets.open(filename)
-                val size = inputStream.available()
-                val buffer = ByteArray(size)
-                inputStream.read(buffer)
-                inputStream.close()
-                return String(buffer, Charset.forName("UTF-8"))
-            } catch (e: IOException) {
-                Log.e(tag, e.message)
-                return ""
-            }
+    private fun getJSONFromAssets(context: Context, filename: String): String {
+        try {
+            val inputStream = context.assets.open(filename)
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
+            return String(buffer, Charset.forName("UTF-8"))
+        } catch (e: IOException) {
+            Log.e(tag, e.message)
+            return ""
         }
     }
 }

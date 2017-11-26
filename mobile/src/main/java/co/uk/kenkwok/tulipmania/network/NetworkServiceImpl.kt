@@ -7,21 +7,15 @@ import co.uk.kenkwok.tulipmania.models.Ticker
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 
 /**
  * Created by kwokk on 17/04/2017.
  */
 
-class NetworkServiceImpl(@Named("anxRetrofit") anxRetrofit: Retrofit,
-                         @Named("bitstampRetrofit") bitstampRetrofit: Retrofit,
-                         @Named("bitfinexRetrofit") bitfinexRetrofit: Retrofit) : NetworkService {
-
-    private val anxService = anxRetrofit.create(ANXApi::class.java)
-    private val bitstampService = bitstampRetrofit.create(BitstampAPI::class.java)
-    private val bitfinexService = bitfinexRetrofit.create(BitfinexAPI::class.java)
+class NetworkServiceImpl(private val anxService: ANXApi,
+                         private val bitstampService: BitstampAPI,
+                         private val bitfinexService: BitfinexAPI) : NetworkService {
 
     /**
      * Gets the most recent ticker data every 15 seconds

@@ -1,12 +1,9 @@
 package co.uk.kenkwok.tulipmania.ui.main
 
 import android.content.Context
-import co.uk.kenkwok.tulipmania.network.NetworkService
-import co.uk.kenkwok.tulipmania.network.NetworkServiceImpl
+import co.uk.kenkwok.tulipmania.network.*
 import dagger.Module
 import dagger.Provides
-import retrofit2.Retrofit
-import javax.inject.Named
 
 /**
  * Created by kekwok on 18/09/2017.
@@ -19,9 +16,7 @@ class MainActivityModule {
     }
 
     @Provides
-    internal fun provideNetworkService(@Named("anxRetrofit") anxRetrofit: Retrofit,
-                                       @Named("bitstampRetrofit") bitstampRetrofit: Retrofit,
-                                       @Named("bitfinexRetrofit") bitfinexRetrofit: Retrofit): NetworkService {
-        return NetworkServiceImpl(anxRetrofit, bitstampRetrofit, bitfinexRetrofit)
+    internal fun provideNetworkService(anxApi: ANXApi, bitstampAPI: BitstampAPI, bitfinexAPI: BitfinexAPI): NetworkService {
+        return NetworkServiceImpl(anxApi, bitstampAPI, bitfinexAPI)
     }
 }

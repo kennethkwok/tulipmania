@@ -1,5 +1,8 @@
 package co.uk.kenkwok.tulipmania.dagger
 
+import co.uk.kenkwok.tulipmania.network.ANXApi
+import co.uk.kenkwok.tulipmania.network.BitfinexAPI
+import co.uk.kenkwok.tulipmania.network.BitstampAPI
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -17,32 +20,23 @@ import javax.inject.Singleton
 class NetworkModule {
     @Singleton
     @Provides
-    @Named("anxRetrofit")
-    internal fun provideAnxRetrofit(okHttpClient: OkHttpClient, @Named("anxBaseUrl") baseUrl: String): Retrofit {
-        return Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(okHttpClient)
-                .build()
+    internal fun provideAnxApi(okHttpClient: OkHttpClient, @Named("anxBaseUrl") baseUrl: String): ANXApi {
+        return getRetrofit(okHttpClient, baseUrl).create(ANXApi::class.java)
     }
 
     @Singleton
     @Provides
-    @Named("bitstampRetrofit")
-    internal fun provideBitstampRetrofit(okHttpClient: OkHttpClient, @Named("bitstampBaseUrl") baseUrl: String): Retrofit {
-        return Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(okHttpClient)
-                .build()
+    internal fun provideBitstampApi(okHttpClient: OkHttpClient, @Named("bitstampBaseUrl") baseUrl: String): BitstampAPI {
+        return getRetrofit(okHttpClient, baseUrl).create(BitstampAPI::class.java)
     }
 
     @Singleton
     @Provides
-    @Named("bitfinexRetrofit")
-    internal fun provideBitfinexRetrofit(okHttpClient: OkHttpClient, @Named("bitfinexBaseUrl") baseUrl: String): Retrofit {
+    internal fun provideBitfinexApi(okHttpClient: OkHttpClient, @Named("bitfinexBaseUrl") baseUrl: String): BitfinexAPI {
+        return getRetrofit(okHttpClient, baseUrl).create(BitfinexAPI::class.java)
+    }
+
+    internal fun getRetrofit(okHttpClient: OkHttpClient, baseUrl: String): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())

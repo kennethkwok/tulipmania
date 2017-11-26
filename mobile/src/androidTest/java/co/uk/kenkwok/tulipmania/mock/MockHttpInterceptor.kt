@@ -18,9 +18,6 @@ class MockHttpInterceptor(private val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
 
-        /* http://sample.com/hello will return "/hello" */
-//        val path = request.url().encodedPath()
-
         var filename: String
         if (request.url().toString().contains(context.getString(R.string.anxpro_base_url))) {
             filename = "anx_api_sample.json"

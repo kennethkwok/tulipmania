@@ -35,7 +35,7 @@ class ApiEndpointTest {
     }
 
     @Test
-    fun getAnxTickerEndpoint() {
+    fun testAnxTickerEndpoint() {
         mockWebServer.enqueue(MockResponse()
                 .setResponseCode(200)
                 .setBody(getFileAsString("anx_api_sample.json")))
@@ -68,7 +68,7 @@ class ApiEndpointTest {
     }
 
     @Test
-    fun getBitstampTickerEndpoint() {
+    fun testBitstampTickerEndpoint() {
         mockWebServer.enqueue(MockResponse()
                 .setResponseCode(200)
                 .setBody(getFileAsString("bitstamp_api_sample.json")))
@@ -99,7 +99,7 @@ class ApiEndpointTest {
     }
 
     @Test
-    fun getBitfinexTickerEndpoint() {
+    fun testBitfinexTickerEndpoint() {
         mockWebServer.enqueue(MockResponse()
                 .setResponseCode(200)
                 .setBody(getFileAsString("bitfinex_api_sample.json")))

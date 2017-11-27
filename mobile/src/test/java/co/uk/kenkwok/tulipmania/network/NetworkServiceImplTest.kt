@@ -38,7 +38,7 @@ class NetworkServiceImplTest {
     }
 
     @Test
-    fun getAnxDataTest() {
+    fun testGetAnxData() {
         Mockito.`when`(anxApi.getMarketTickerObservable(apiKey = anyString(),
                 restSign = anyString(),
                 currencyPair = anyString(),
@@ -54,7 +54,7 @@ class NetworkServiceImplTest {
     }
 
     @Test
-    fun getBitstampDataTest() {
+    fun testGetBitstampData() {
         Mockito.`when`(bitstampApi.getMarketTickerObservable(
                 currencyPair = anyString())).thenReturn(Observable.just(generateBitstampTicker()))
 
@@ -68,7 +68,7 @@ class NetworkServiceImplTest {
     }
 
     @Test
-    fun getBitfinexDataTest() {
+    fun testGetBitfinexData() {
         Mockito.`when`(bitfinexApi.getMarketTickerObservable(
                 currencyPair = anyString())).thenReturn(Observable.just(generateBitfinexTicker()))
 

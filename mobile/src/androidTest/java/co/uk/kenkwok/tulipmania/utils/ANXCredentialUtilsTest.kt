@@ -16,7 +16,7 @@ class ANXCredentialUtilsTest {
     private val context: Context = InstrumentationRegistry.getTargetContext()
 
     @Test
-    fun getANXCredentialsTest() {
+    fun testGetANXCredentials() {
         val credentials = ANXCredentialUtils.getApiCredentials(context)
         assertNotNull(credentials.apiKey)
         assertNotNull(credentials.apiSecret)

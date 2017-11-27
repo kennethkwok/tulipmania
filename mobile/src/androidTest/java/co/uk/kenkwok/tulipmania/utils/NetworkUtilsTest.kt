@@ -15,7 +15,7 @@ class NetworkUtilsTest {
     private val context: Context = InstrumentationRegistry.getTargetContext()
 
     @Test
-    fun generateRestSignTest() {
+    fun testGenerateANXRestSign() {
         val credentials = ANXCredentialUtils.getApiCredentials(context)
         val data = "/btcusd/money/ticker"
         val restSign = NetworkUtils.generateRestSign(credentials.apiSecret, data.toByteArray())

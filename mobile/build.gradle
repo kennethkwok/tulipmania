@@ -12,7 +12,7 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "co.uk.kenkwok.tulipmania.CustomTestRunner"
     }
     buildTypes {
         release {
@@ -61,9 +61,12 @@ dependencies {
     androidTestCompile 'com.android.support:support-annotations:24.0.0'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
+    androidTestCompile "org.mockito:mockito-android:2.12.0"
     testCompile "org.mockito:mockito-core:2.12.0"
     testCompile 'com.squareup.okhttp3:mockwebserver:3.9.1'
     testCompile 'junit:junit:4.12'
+    kaptAndroidTest "com.google.dagger:dagger-android-processor:$daggerVersion"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
 
     wearApp project(':wear')
     compile 'com.android.support:appcompat-v7:26.0.2'
@@ -97,6 +100,12 @@ dependencies {
         }
     }
 }
+
+android.applicationVariants.all {
+    def aptOutputDir = new File(buildDir, "generated/source/apt/${it.unitTestVariant.dirName}")
+    it.unitTestVariant.addJavaSourceFoldersToModel(aptOutputDir)
+}
+
 repositories {
     mavenCentral()
 }

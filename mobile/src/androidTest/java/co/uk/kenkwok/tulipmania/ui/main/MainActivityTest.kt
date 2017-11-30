@@ -9,7 +9,6 @@ import co.uk.kenkwok.tulipmania.R.id.*
 import co.uk.kenkwok.tulipmania.testutils.RecyclerViewItemCountAssertion.Companion.withItemCount
 import co.uk.kenkwok.tulipmania.testutils.RecyclerViewMatcher
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,9 +25,6 @@ class MainActivityTest {
 
     @Test
     fun testTickerListDisplay() {
-        // loading spinner is not visible
-        onView(withId(loadingSpinner)).check(matches(not(isDisplayed())))
-
         // recyclerview
         onView(withId(recyclerView)).check(matches(isDisplayed()))
         onView(withId(recyclerView)).check(withItemCount(3))

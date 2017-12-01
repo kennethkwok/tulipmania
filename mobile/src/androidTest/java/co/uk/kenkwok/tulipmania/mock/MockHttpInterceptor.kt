@@ -17,6 +17,14 @@ class MockHttpInterceptor: Interceptor {
 
         if (path.contains("/v1/pubticker/btcusd")) {
             json = getFileAsString("bitfinex_api_sample.json")
+            return Response.Builder()
+                    .body(ResponseBody.create(MEDIA_JSON, json))
+                    .request(chain.request())
+                    .protocol(Protocol.HTTP_2)
+                    .message("")
+                    .code(500)
+                    .build()
+
         } else if (path.contains("/api/v2/ticker/btcusd")) {
             json = getFileAsString("bitstamp_api_sample.json")
         } else {

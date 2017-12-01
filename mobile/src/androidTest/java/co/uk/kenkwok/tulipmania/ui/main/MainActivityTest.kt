@@ -9,6 +9,7 @@ import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import co.uk.kenkwok.tulipmania.R
 import co.uk.kenkwok.tulipmania.R.id.*
+import co.uk.kenkwok.tulipmania.models.ExchangeName
 import co.uk.kenkwok.tulipmania.testutils.RecyclerViewItemCountAssertion.Companion.withItemCount
 import co.uk.kenkwok.tulipmania.testutils.RecyclerViewMatcher
 import org.hamcrest.Matchers.allOf
@@ -65,6 +66,25 @@ class MainActivityTest {
 
         onView(withRecyclerView(recyclerView).atPosition(1))
                 .check(matches(hasDescendant(allOf(withId(item24hourLow), withEffectiveVisibility(Visibility.VISIBLE)))))
+    }
+
+    @Test
+    fun testTickerNetworkError() {
+        onView(allOf(withId(android.support.design.R.id.snackbar_text), withText(context.getString(R.string.network_error, ExchangeName.BITFINEX.exchange))))
+                .check(matches(isDisplayed()))
+
+        // row 2 (bitfinex) should always be - as MockHttpInterceptor returns a HTTP 500
+        onView(withRecyclerView(recyclerView).atPosition(2))
+                .check(matches(hasDescendant(allOf(withId(itemExchangeName), withText(ExchangeName.BITFINEX.exchange)))))
+
+        onView(withRecyclerView(recyclerView).atPosition(2))
+                .check(matches(hasDescendant(allOf(withId(itemPrice), withText("-")))))
+
+        onView(withRecyclerView(recyclerView).atPosition(2))
+                .check(matches(hasDescendant(allOf(withId(item24hourHigh), withText(context.getString(R.string.twenty_four_hour_high, "-"))))))
+
+        onView(withRecyclerView(recyclerView).atPosition(2))
+                .check(matches(hasDescendant(allOf(withId(item24hourLow), withText(context.getString(R.string.twenty_four_hour_low, "-"))))))
     }
 
     fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {

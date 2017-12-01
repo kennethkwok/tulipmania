@@ -81,7 +81,7 @@ class NetworkServiceImplTest {
                 .assertValue(generateBitfinexTicker())
     }
 
-    private fun generateAnxTicker(): Ticker {
+    private fun generateAnxTicker(): AnxTicker {
         val displayShort = "12,345.67 USD"
         val valueInt = "1"
         val currency = "USD"
@@ -101,7 +101,7 @@ class NetworkServiceImplTest {
                 dataUpdateTime = Long.MAX_VALUE
         )
 
-        return Ticker(result = "",
+        return AnxTicker(result = "",
                 data = Data(currencyPair, currencyPair))
     }
 

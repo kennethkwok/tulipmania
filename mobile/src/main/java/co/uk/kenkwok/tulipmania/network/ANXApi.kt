@@ -1,7 +1,7 @@
 package co.uk.kenkwok.tulipmania.network
 
 import android.support.annotation.Nullable
-import co.uk.kenkwok.tulipmania.models.Ticker
+import co.uk.kenkwok.tulipmania.models.AnxTicker
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -21,5 +21,5 @@ interface ANXApi {
      * @param extraCurrencyPair optional list of extra currency pairs, separated by commas no space
      */
     @GET("/api/2/{currencyPair}/money/ticker")
-    fun getMarketTickerObservable(@Path("currencyPair") currencyPair: String, @Header("Rest-Key") apiKey: String, @Header("Rest-Sign") restSign: String, @Nullable @Query("extraCcyPairs") extraCurrencyPair: String): Observable<Ticker>
+    fun getMarketTickerObservable(@Path("currencyPair") currencyPair: String, @Header("Rest-Key") apiKey: String, @Header("Rest-Sign") restSign: String, @Nullable @Query("extraCcyPairs") extraCurrencyPair: String): Observable<AnxTicker>
 }

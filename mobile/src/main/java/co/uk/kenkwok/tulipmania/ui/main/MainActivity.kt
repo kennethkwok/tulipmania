@@ -74,7 +74,7 @@ class MainActivity : BaseActivity() {
 
     fun displayError(t: Throwable) {
         Log.e(TAG, t.message)
-        Toast.makeText(this, "Error getting Ticker data", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Error getting AnxTicker data", Toast.LENGTH_LONG).show()
     }
 
     companion object {

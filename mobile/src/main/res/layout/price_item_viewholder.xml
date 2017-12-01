@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/padding_small"
+    android:layout_marginBottom="1dp"
     android:elevation="@dimen/cardview_elevation"
     tools:context="co.uk.kenkwok.tulipmania.ui.main.MainActivity">
 

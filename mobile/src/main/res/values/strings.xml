@@ -9,4 +9,9 @@
     <!-- price item viewholder -->
     <string name="twenty_four_hour_high">24h high: %1$s</string>
     <string name="twenty_four_hour_low">24h low: %1$s</string>
+
+    <!-- section heading viewholder -->
+    <string name="btc_heading">Bitcoin (BTC)</string>
+    <string name="eth_heading">Ethereum (ETC)</string>
+    <string name="ltc_heading">Litecoin (LTC)</string>
 </resources>

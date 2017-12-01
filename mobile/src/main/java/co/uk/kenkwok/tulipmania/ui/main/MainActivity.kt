@@ -19,7 +19,7 @@ class MainActivity : BaseActivity() {
     @Inject
     lateinit var viewModel: MainViewModel
 
-    private val adapter = RecyclerViewAdapter()
+    private lateinit var adapter: RecyclerViewAdapter
 
     override val layoutId = R.layout.activity_main
 
@@ -41,6 +41,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initViews() {
+        adapter = RecyclerViewAdapter(context)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
     }

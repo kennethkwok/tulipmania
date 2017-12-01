@@ -7,17 +7,14 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import co.uk.kenkwok.tulipmania.R
-import co.uk.kenkwok.tulipmania.models.PriceItem
+import co.uk.kenkwok.tulipmania.models.RecyclerViewTickerItem
 import co.uk.kenkwok.tulipmania.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 class MainActivity : BaseActivity() {
-    @Inject
-    lateinit var context: Context
-
-    @Inject
-    lateinit var viewModel: MainViewModel
+    @Inject lateinit var context: Context
+    @Inject lateinit var viewModel: MainViewModel
 
     private lateinit var adapter: RecyclerViewAdapter
 
@@ -35,36 +32,23 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initViews()
         initObservables()
         viewModel.onCreate()
     }
 
-    private fun initViews() {
-        adapter = RecyclerViewAdapter(context)
+    private fun initRecyclerView(list: ArrayList<RecyclerViewTickerItem>) {
+        adapter = RecyclerViewAdapter(list)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
     }
 
     private fun initObservables() {
         compositeDisposable.addAll(
-                viewModel.anxTickerObservable
-                        .subscribe({ priceItem ->
-                            setPriceItem(priceItem)
-                            hideLoadingSpinner()
-                        }, {
-                            t -> displayError(t)
-                        }),
-                viewModel.bitstampTickerObservable
-                        .subscribe({ priceItem ->
-                            setPriceItem(priceItem)
-                            hideLoadingSpinner()
-                        }, {
-                            t -> displayError(t)
-                        }),
-                viewModel.bitfinexTickerObservable
-                        .subscribe({ priceItem ->
-                            setPriceItem(priceItem)
+                viewModel.initTickerList()
+                        .subscribe({ list -> initRecyclerView(list) }),
+                viewModel.tickerObservable
+                        .subscribe({ item ->
+                            setTickerItem(item)
                             hideLoadingSpinner()
                         }, {
                             t -> displayError(t)
@@ -84,7 +68,7 @@ class MainActivity : BaseActivity() {
         viewModel.onDestroy()
     }
 
-    fun setPriceItem(item: PriceItem) {
+    fun setTickerItem(item: RecyclerViewTickerItem) {
         adapter.updatePriceItem(item)
     }
 

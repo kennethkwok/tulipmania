@@ -8,9 +8,9 @@ data class RecyclerViewTickerItem @JvmOverloads constructor(
         val tickerItem: PriceItem? = null
 )
 
-data class PriceItem(
-        val exchangePrice: String,
-        val twentyFourHourHigh: String,
-        val twentyFourHourLow: String,
+data class PriceItem @JvmOverloads constructor(
+        val exchangePrice: String? = "-",
+        val twentyFourHourHigh: String? = "-",
+        val twentyFourHourLow: String? = "-",
         val exchangeName: ExchangeName
 )

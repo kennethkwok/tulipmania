@@ -1,9 +1,11 @@
 package co.uk.kenkwok.tulipmania.ui.main
 
 import android.content.Context
+import co.uk.kenkwok.tulipmania.R
 import co.uk.kenkwok.tulipmania.models.CurrencyPair
 import co.uk.kenkwok.tulipmania.models.ExchangeName
 import co.uk.kenkwok.tulipmania.models.PriceItem
+import co.uk.kenkwok.tulipmania.models.RecyclerViewTickerItem
 import co.uk.kenkwok.tulipmania.network.NetworkService
 import co.uk.kenkwok.tulipmania.ui.base.BaseViewModel
 import co.uk.kenkwok.tulipmania.utils.ANXCredentialUtils
@@ -17,18 +19,10 @@ import io.reactivex.subjects.PublishSubject
  */
 
 class MainViewModel(private val networkService: NetworkService, private val context: Context) : BaseViewModel() {
-    private val anxPriceItemSubject = PublishSubject.create<PriceItem>()
-    private val bitstampPriceItemSubject = PublishSubject.create<PriceItem>()
-    private val bitfinexPriceItemSubject = PublishSubject.create<PriceItem>()
+    private val tickerItemSubject = PublishSubject.create<RecyclerViewTickerItem>()
 
-    val anxTickerObservable: Observable<PriceItem>
-        get() = anxPriceItemSubject.hide()
-
-    val bitstampTickerObservable: Observable<PriceItem>
-        get() = bitstampPriceItemSubject.hide()
-
-    val bitfinexTickerObservable: Observable<PriceItem>
-        get() = bitfinexPriceItemSubject.hide()
+    val tickerObservable: Observable<RecyclerViewTickerItem>
+        get() = tickerItemSubject.hide()
 
     override fun onCreate() {
         super.onCreate()
@@ -45,6 +39,16 @@ class MainViewModel(private val networkService: NetworkService, private val cont
         super.onPause()
     }
 
+    fun initTickerList(): Observable<ArrayList<RecyclerViewTickerItem>> {
+        val tickerList = ArrayList<RecyclerViewTickerItem>()
+        tickerList.add(RecyclerViewTickerItem(context.getString(R.string.btc_heading)))
+        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(exchangeName = ExchangeName.ANXPRO)))
+        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(exchangeName = ExchangeName.BITFINEX)))
+        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(exchangeName = ExchangeName.BITSTAMP)))
+
+        return Observable.just(tickerList)
+    }
+
     private fun getBitfinexTicker() {
         val currencyPair = "btcusd"
         compositeDisposable?.add(
@@ -52,15 +56,15 @@ class MainViewModel(private val networkService: NetworkService, private val cont
                         .getBitfinexTickerData(currencyPair)
                         .subscribe (
                                 { ticker ->
-                                    val priceItem = PriceItem(
+                                    val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
                                             exchangeName = ExchangeName.BITFINEX,
                                             exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
                                             twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),
-                                            twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low)
+                                            twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low))
                                     )
-                                    bitfinexPriceItemSubject.onNext(priceItem) },
+                                    tickerItemSubject.onNext(tickerItem) },
                                 { throwable ->
-                                    bitfinexPriceItemSubject.onError(throwable)
+                                    tickerItemSubject.onError(throwable)
                                 })
         )
     }
@@ -72,15 +76,15 @@ class MainViewModel(private val networkService: NetworkService, private val cont
                         .getBitstampTickerData(currencyPair)
                         .subscribe (
                                 { ticker ->
-                                    val priceItem = PriceItem(
+                                    val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
                                             exchangeName = ExchangeName.BITSTAMP,
                                             exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
                                             twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),
-                                            twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low)
+                                            twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low))
                                     )
-                                    bitstampPriceItemSubject.onNext(priceItem) },
+                                    tickerItemSubject.onNext(tickerItem) },
                                 { throwable ->
-                                    bitstampPriceItemSubject.onError(throwable)
+                                    tickerItemSubject.onError(throwable)
                                 })
         )
     }
@@ -96,20 +100,20 @@ class MainViewModel(private val networkService: NetworkService, private val cont
                 networkService
                         .getAnxTickerData(apiCredentials.apiKey, restSign, currencyPair, extraCcyPairs)
                         .subscribe({ ticker ->
-                            anxPriceItemSubject.onNext(
-                                convertCurrencyPairToPriceItem(ticker.data.btcusd))
+                            tickerItemSubject.onNext(
+                                convertCurrencyPairToTickerItem(ticker.data.btcusd))
                         }, { throwable ->
-                            anxPriceItemSubject.onError(throwable)
+                            tickerItemSubject.onError(throwable)
                         })
         )
     }
 
-    private fun convertCurrencyPairToPriceItem(pair: CurrencyPair): PriceItem {
-        return PriceItem(
+    private fun convertCurrencyPairToTickerItem(pair: CurrencyPair): RecyclerViewTickerItem {
+        return RecyclerViewTickerItem(tickerItem = PriceItem(
                 exchangeName = ExchangeName.ANXPRO,
                 exchangePrice = CurrencyUtils.convertDisplayCurrency(pair.sell.displayShort),
                 twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(pair.high.displayShort),
-                twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(pair.low.displayShort)
+                twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(pair.low.displayShort))
         )
     }
 }

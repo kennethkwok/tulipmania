@@ -16,22 +16,16 @@ import kotlinx.android.synthetic.main.section_heading_viewholder.view.*
 /**
  * Created by kwokk on 17/11/2017.
  */
-class RecyclerViewAdapter(private val context: Context) : RecyclerView.Adapter<BaseViewHolder>() {
-    private var exchangeList = ArrayList<RecyclerViewTickerItem>()
+class RecyclerViewAdapter(private var exchangeList: ArrayList<RecyclerViewTickerItem>) : RecyclerView.Adapter<BaseViewHolder>() {
 
-    init {
-        // add section heading
-        exchangeList.add(0, RecyclerViewTickerItem(context.getString(R.string.btc_heading)))
-    }
-
-    fun updatePriceItem(item: PriceItem) {
-        val index = containsExchangeName(item.exchangeName)
+    fun updatePriceItem(item: RecyclerViewTickerItem) {
+        val index = containsExchangeName(item.tickerItem?.exchangeName)
 
         if (index < 0) {
-            exchangeList.add(RecyclerViewTickerItem(tickerItem = item))
+            exchangeList.add(item)
             notifyItemInserted(itemCount - 1)
         } else {
-            exchangeList.set(index, RecyclerViewTickerItem(tickerItem = item))
+            exchangeList.set(index, item)
             notifyItemChanged(index)
         }
     }
@@ -69,7 +63,7 @@ class RecyclerViewAdapter(private val context: Context) : RecyclerView.Adapter<B
         }
     }
 
-    private fun containsExchangeName(name: ExchangeName): Int {
+    private fun containsExchangeName(name: ExchangeName?): Int {
         if (exchangeList.size == 0) {
             return -1
         }

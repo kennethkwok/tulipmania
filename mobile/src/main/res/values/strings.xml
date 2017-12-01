@@ -6,6 +6,9 @@
     <string name="bitstamp_base_url">https://www.bitstamp.net/</string>
     <string name="bitfinex_base_url">https://api.bitfinex.com/</string>
 
+    <!-- error message -->
+    <string name="network_error">Error getting ticker data from %1$s</string>
+
     <!-- price item viewholder -->
     <string name="twenty_four_hour_high">24h high: %1$s</string>
     <string name="twenty_four_hour_low">24h low: %1$s</string>

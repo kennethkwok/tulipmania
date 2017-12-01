@@ -1,6 +1,7 @@
 package co.uk.kenkwok.tulipmania.ui.main
 
 import android.content.Context
+import android.util.Log
 import co.uk.kenkwok.tulipmania.R
 import co.uk.kenkwok.tulipmania.models.CurrencyPair
 import co.uk.kenkwok.tulipmania.models.ExchangeName
@@ -19,6 +20,7 @@ import io.reactivex.subjects.PublishSubject
  */
 
 class MainViewModel(private val networkService: NetworkService, private val context: Context) : BaseViewModel() {
+    private val TAG = "MainViewModel"
     private val tickerItemSubject = PublishSubject.create<RecyclerViewTickerItem>()
 
     val tickerObservable: Observable<RecyclerViewTickerItem>
@@ -64,7 +66,8 @@ class MainViewModel(private val networkService: NetworkService, private val cont
                                     )
                                     tickerItemSubject.onNext(tickerItem) },
                                 { throwable ->
-                                    tickerItemSubject.onError(throwable)
+                                    Log.e(TAG, throwable.message)
+                                    tickerItemSubject.onError(Throwable(ExchangeName.BITFINEX.exchange))
                                 })
         )
     }
@@ -84,7 +87,8 @@ class MainViewModel(private val networkService: NetworkService, private val cont
                                     )
                                     tickerItemSubject.onNext(tickerItem) },
                                 { throwable ->
-                                    tickerItemSubject.onError(throwable)
+                                    Log.e(TAG, throwable.message)
+                                    tickerItemSubject.onError(Throwable(ExchangeName.BITSTAMP.exchange))
                                 })
         )
     }
@@ -103,7 +107,8 @@ class MainViewModel(private val networkService: NetworkService, private val cont
                             tickerItemSubject.onNext(
                                 convertCurrencyPairToTickerItem(ticker.data.btcusd))
                         }, { throwable ->
-                            tickerItemSubject.onError(throwable)
+                            Log.e(TAG, throwable.message)
+                            tickerItemSubject.onError(Throwable(ExchangeName.ANXPRO.exchange))
                         })
         )
     }

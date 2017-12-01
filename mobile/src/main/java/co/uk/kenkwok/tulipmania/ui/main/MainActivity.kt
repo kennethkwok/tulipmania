@@ -2,10 +2,9 @@ package co.uk.kenkwok.tulipmania.ui.main
 
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import co.uk.kenkwok.tulipmania.R
 import co.uk.kenkwok.tulipmania.models.RecyclerViewTickerItem
 import co.uk.kenkwok.tulipmania.ui.base.BaseActivity
@@ -73,8 +72,9 @@ class MainActivity : BaseActivity() {
     }
 
     fun displayError(t: Throwable) {
-        Log.e(TAG, t.message)
-        Toast.makeText(this, "Error getting AnxTicker data", Toast.LENGTH_LONG).show()
+        t.message?.let { exchangeName ->
+            Snackbar.make(coordinatorLayout, getString(R.string.network_error, exchangeName), Snackbar.LENGTH_LONG).show()
+        }
     }
 
     companion object {

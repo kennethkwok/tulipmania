@@ -25,29 +25,24 @@ class RecyclerViewAdapter(private var exchangeList: ArrayList<RecyclerViewTicker
             exchangeList.add(item)
             notifyItemInserted(itemCount - 1)
         } else {
-            exchangeList.set(index, item)
+            exchangeList[index] = item
             notifyItemChanged(index)
         }
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         if (holder is PriceItemViewHolder) {
-            val ticker = exchangeList.get(position).tickerItem as PriceItem
-            holder.setData(ticker)
+            exchangeList[position].tickerItem?.let { ticker -> holder.setData(ticker) }
         } else if (holder is SectionHeadingViewHolder) {
-            val heading = exchangeList.get(position).sectionHeading as String
-            holder.setData(heading)
+            exchangeList[position].sectionHeading?.let { heading -> holder.setData(heading) }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
-        // price item
-        if (viewType == 1) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.price_item_viewholder, parent, false)
-            return PriceItemViewHolder(parent.context, view)
+        return if (viewType == 1) {
+            PriceItemViewHolder(parent.context, LayoutInflater.from(parent.context).inflate(R.layout.price_item_viewholder, parent, false))
         } else {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.section_heading_viewholder, parent, false)
-            return SectionHeadingViewHolder(view)
+            SectionHeadingViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.section_heading_viewholder, parent, false))
         }
     }
 
@@ -56,11 +51,7 @@ class RecyclerViewAdapter(private var exchangeList: ArrayList<RecyclerViewTicker
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position == 0) {
-            return 0
-        } else {
-            return 1
-        }
+        return if (position == 0) { 0 } else { 1 }
     }
 
     private fun containsExchangeName(name: ExchangeName?): Int {

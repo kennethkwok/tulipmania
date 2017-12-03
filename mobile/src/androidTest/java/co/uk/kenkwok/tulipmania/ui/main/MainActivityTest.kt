@@ -7,6 +7,8 @@ import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import android.support.test.uiautomator.UiDevice
+import android.support.test.uiautomator.UiSelector
 import co.uk.kenkwok.tulipmania.R
 import co.uk.kenkwok.tulipmania.R.id.*
 import co.uk.kenkwok.tulipmania.models.ExchangeName
@@ -17,8 +19,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
-
 
 /**
  * Created by kwokk on 28/11/2017.
@@ -70,8 +70,11 @@ class MainActivityTest {
 
     @Test
     fun testTickerNetworkError() {
-        onView(allOf(withId(android.support.design.R.id.snackbar_text), withText(context.getString(R.string.network_error, ExchangeName.BITFINEX.exchange))))
-                .check(matches(isDisplayed()))
+
+        // use UIAutomator to test for snackbar as BuddyBuild cannot match snackbar using espresso
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        val snackbarTextView = device.findObject(UiSelector().text(context.getString(R.string.network_error, ExchangeName.BITFINEX.exchange)))
+        snackbarTextView?.text ?: throw RuntimeException("Cannot find snackbar")
 
         // row 2 (bitfinex) should always be - as MockHttpInterceptor returns a HTTP 500
         onView(withRecyclerView(recyclerView).atPosition(2))

@@ -56,19 +56,20 @@ class MainViewModel(private val networkService: NetworkService, private val cont
         compositeDisposable?.add(
                 networkService
                         .getBitfinexTickerData(currencyPair)
-                        .subscribe (
-                                { ticker ->
-                                    val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
-                                            exchangeName = ExchangeName.BITFINEX,
-                                            exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
-                                            twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),
-                                            twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low))
-                                    )
-                                    tickerItemSubject.onNext(tickerItem) },
-                                { throwable ->
-                                    Log.e(TAG, throwable.message)
-                                    tickerItemSubject.onError(Throwable(ExchangeName.BITFINEX.exchange))
-                                })
+                        .onErrorResumeNext { throwable: Throwable ->
+                            Log.e(TAG, throwable.message)
+                            tickerItemSubject.onNext(RecyclerViewTickerItem(error = Throwable(ExchangeName.BITFINEX.exchange)))
+                            Observable.empty()
+                        }
+                        .subscribe { ticker ->
+                            val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
+                                    exchangeName = ExchangeName.BITFINEX,
+                                    exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
+                                    twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),
+                                    twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low))
+                            )
+                            tickerItemSubject.onNext(tickerItem)
+                        }
         )
     }
 
@@ -77,19 +78,20 @@ class MainViewModel(private val networkService: NetworkService, private val cont
         compositeDisposable?.add(
                 networkService
                         .getBitstampTickerData(currencyPair)
-                        .subscribe (
-                                { ticker ->
-                                    val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
-                                            exchangeName = ExchangeName.BITSTAMP,
-                                            exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
-                                            twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),
-                                            twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low))
-                                    )
-                                    tickerItemSubject.onNext(tickerItem) },
-                                { throwable ->
-                                    Log.e(TAG, throwable.message)
-                                    tickerItemSubject.onError(Throwable(ExchangeName.BITSTAMP.exchange))
-                                })
+                        .onErrorResumeNext { throwable: Throwable ->
+                            Log.e(TAG, throwable.message)
+                            tickerItemSubject.onNext(RecyclerViewTickerItem(error = Throwable(ExchangeName.BITSTAMP.exchange)))
+                            Observable.empty()
+                        }
+                        .subscribe { ticker ->
+                            val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
+                                    exchangeName = ExchangeName.BITSTAMP,
+                                    exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
+                                    twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),
+                                    twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low))
+                            )
+                            tickerItemSubject.onNext(tickerItem)
+                        }
         )
     }
 
@@ -103,13 +105,15 @@ class MainViewModel(private val networkService: NetworkService, private val cont
         compositeDisposable?.add(
                 networkService
                         .getAnxTickerData(apiCredentials.apiKey, restSign, currencyPair, extraCcyPairs)
-                        .subscribe({ ticker ->
-                            tickerItemSubject.onNext(
-                                convertCurrencyPairToTickerItem(ticker.data.btcusd))
-                        }, { throwable ->
+                        .onErrorResumeNext { throwable: Throwable ->
                             Log.e(TAG, throwable.message)
-                            tickerItemSubject.onError(Throwable(ExchangeName.ANXPRO.exchange))
-                        })
+                            tickerItemSubject.onNext(RecyclerViewTickerItem(error = Throwable(ExchangeName.ANXPRO.exchange)))
+                            Observable.empty()
+                        }
+                        .subscribe { ticker ->
+                            tickerItemSubject.onNext(convertCurrencyPairToTickerItem(ticker.data.btcusd))
+                        }
+
         )
     }
 

@@ -5,7 +5,8 @@ package co.uk.kenkwok.tulipmania.models
  */
 data class RecyclerViewTickerItem @JvmOverloads constructor(
         val sectionHeading: String? = "",
-        val tickerItem: PriceItem? = null
+        val tickerItem: PriceItem? = null,
+        val error: Throwable? = null
 )
 
 data class PriceItem @JvmOverloads constructor(

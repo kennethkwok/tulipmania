@@ -46,12 +46,10 @@ class MainActivity : BaseActivity() {
                 viewModel.initTickerList()
                         .subscribe({ list -> initRecyclerView(list) }),
                 viewModel.tickerObservable
-                        .subscribe({ item ->
+                        .subscribe { item ->
                             setTickerItem(item)
                             hideLoadingSpinner()
-                        }, {
-                            t -> displayError(t)
-                        })
+                        }
         )
     }
 
@@ -68,7 +66,13 @@ class MainActivity : BaseActivity() {
     }
 
     fun setTickerItem(item: RecyclerViewTickerItem) {
-        adapter.updatePriceItem(item)
+        item.tickerItem?.let {
+            adapter.updatePriceItem(item)
+        }
+
+        item.error?.let { throwable ->
+            displayError(throwable)
+        }
     }
 
     fun displayError(t: Throwable) {

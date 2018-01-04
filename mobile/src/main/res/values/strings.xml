@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">Tulipmania</string>
+    <string name="service_name">Tulipmania Network Service</string>
 
     <!-- network endpoint -->
     <string name="anxpro_base_url">https://anxpro.com/</string>
     <string name="bitstamp_base_url">https://www.bitstamp.net/</string>
     <string name="bitfinex_base_url">https://api.bitfinex.com/</string>
+    <string name="bitfinex_websocket_url">wss://api.bitfinex.com/ws</string>
 
     <!-- error message -->
     <string name="network_error">Error getting ticker data from %1$s</string>

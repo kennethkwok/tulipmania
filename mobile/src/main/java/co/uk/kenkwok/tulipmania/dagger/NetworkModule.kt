@@ -1,8 +1,12 @@
 package co.uk.kenkwok.tulipmania.dagger
 
+import co.uk.kenkwok.tulipmania.library.websocket.RxWebSocket
 import co.uk.kenkwok.tulipmania.network.ANXApi
 import co.uk.kenkwok.tulipmania.network.BitfinexAPI
 import co.uk.kenkwok.tulipmania.network.BitstampAPI
+import co.uk.kenkwok.tulipmania.service.BitfinexService
+import co.uk.kenkwok.tulipmania.service.BitfinexWebSocket
+import co.uk.kenkwok.tulipmania.service.BitfinexWebSocketImpl
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -55,5 +59,23 @@ class NetworkModule {
     @Provides
     internal fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    }
+
+    @Singleton
+    @Provides
+    internal fun provideWebSocketService(): BitfinexService {
+        return BitfinexService()
+    }
+
+    @Singleton
+    @Provides
+    internal fun provideWebSocket(okHttpClient: OkHttpClient, @Named("bitfinexWebSocketUrl") websocketUrl: String): RxWebSocket {
+        return RxWebSocket(okHttpClient, websocketUrl)
+    }
+
+    @Singleton
+    @Provides
+    internal fun provideBitfinexWebSocket(rxWebSocket: RxWebSocket): BitfinexWebSocket {
+        return BitfinexWebSocketImpl(rxWebSocket)
     }
 }

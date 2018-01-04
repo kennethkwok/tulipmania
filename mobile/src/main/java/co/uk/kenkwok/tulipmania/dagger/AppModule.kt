@@ -41,4 +41,11 @@ class AppModule {
     internal fun getBitfinexBaseUrl(context: Context): String {
         return context.getString(R.string.bitfinex_base_url)
     }
+
+    @Singleton
+    @Provides
+    @Named("bitfinexWebSocketUrl")
+    internal fun getBitfinexWebSocketUrl(context: Context): String {
+        return context.getString(R.string.bitfinex_websocket_url)
+    }
 }

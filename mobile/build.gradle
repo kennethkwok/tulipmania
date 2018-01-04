@@ -63,6 +63,9 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile "org.mockito:mockito-android:2.12.0"
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
+    androidTestCompile ('com.squareup.okhttp3:mockwebserver:3.9.1', {
+        exclude module: 'okhttp'
+    })
     testCompile "org.mockito:mockito-core:2.12.0"
     testCompile 'com.squareup.okhttp3:mockwebserver:3.9.1'
     testCompile 'junit:junit:4.12'

@@ -8,6 +8,7 @@ import co.uk.kenkwok.tulipmania.models.ExchangeName
 import co.uk.kenkwok.tulipmania.models.PriceItem
 import co.uk.kenkwok.tulipmania.models.RecyclerViewTickerItem
 import co.uk.kenkwok.tulipmania.network.NetworkService
+import co.uk.kenkwok.tulipmania.service.BitfinexService
 import co.uk.kenkwok.tulipmania.ui.base.BaseViewModel
 import co.uk.kenkwok.tulipmania.utils.ANXCredentialUtils
 import co.uk.kenkwok.tulipmania.utils.CurrencyUtils
@@ -19,8 +20,9 @@ import io.reactivex.subjects.PublishSubject
  * Created by kekwok on 18/09/2017.
  */
 
-class MainViewModel(private val networkService: NetworkService, private val context: Context) : BaseViewModel() {
-    private val TAG = "MainViewModel"
+class MainViewModel(private val networkService: NetworkService,
+                    private val context: Context) : BaseViewModel() {
+    override val TAG = "MainViewModel"
     private val tickerItemSubject = PublishSubject.create<RecyclerViewTickerItem>()
 
     val tickerObservable: Observable<RecyclerViewTickerItem>
@@ -28,17 +30,39 @@ class MainViewModel(private val networkService: NetworkService, private val cont
 
     override fun onCreate() {
         super.onCreate()
+    }
+
+    override fun onStart() {
+        super.onStart()
         getAnxTicker()
         getBitstampTicker()
-        getBitfinexTicker()
+
+        // disable bitfinex ticker for websockets
+        // getBitfinexTicker()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStop() {
+        super.onStop()
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+    fun subscribeWebSocketUpdates(service: BitfinexService) {
+        compositeDisposable.add(
+                service.getWebSocketTickerObservable().subscribe {
+                    ticker ->
+                    Log.d(TAG, "price: ${ticker.ask}, 24h % change: ${ticker.dailyChangePercent}")
+                    val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
+                            exchangeName = ExchangeName.BITFINEX,
+                            exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid.toString()),
+                            twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high.toString()),
+                            twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low.toString()))
+                    )
+                    tickerItemSubject.onNext(tickerItem)
+                }
+        )
     }
 
     fun initTickerList(): Observable<ArrayList<RecyclerViewTickerItem>> {
@@ -53,7 +77,7 @@ class MainViewModel(private val networkService: NetworkService, private val cont
 
     private fun getBitfinexTicker() {
         val currencyPair = "btcusd"
-        compositeDisposable?.add(
+        compositeDisposable.add(
                 networkService
                         .getBitfinexTickerData(currencyPair)
                         .onErrorResumeNext { throwable: Throwable ->
@@ -75,7 +99,7 @@ class MainViewModel(private val networkService: NetworkService, private val cont
 
     private fun getBitstampTicker() {
         val currencyPair = "btcusd"
-        compositeDisposable?.add(
+        compositeDisposable.add(
                 networkService
                         .getBitstampTickerData(currencyPair)
                         .onErrorResumeNext { throwable: Throwable ->
@@ -102,7 +126,7 @@ class MainViewModel(private val networkService: NetworkService, private val cont
         val apiCredentials = ANXCredentialUtils.getApiCredentials(context)
         val restSign = NetworkUtils.generateRestSign(apiCredentials.apiSecret, data.toByteArray())
 
-        compositeDisposable?.add(
+        compositeDisposable.add(
                 networkService
                         .getAnxTickerData(apiCredentials.apiKey, restSign, currencyPair, extraCcyPairs)
                         .onErrorResumeNext { throwable: Throwable ->

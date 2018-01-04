@@ -73,20 +73,21 @@ class MainActivityTest {
 
         // use UIAutomator to test for snackbar as BuddyBuild cannot match snackbar using espresso
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        val snackbarTextView = device.findObject(UiSelector().text(context.getString(R.string.network_error, ExchangeName.BITFINEX.exchange)))
+        val snackbarTextView = device.findObject(UiSelector().text(context.getString(R.string.network_error, ExchangeName.BITSTAMP.exchange)))
         snackbarTextView?.text ?: throw RuntimeException("Cannot find snackbar")
+        val rowNumber = 3
 
-        // row 2 (bitfinex) should always be - as MockHttpInterceptor returns a HTTP 500
-        onView(withRecyclerView(recyclerView).atPosition(2))
-                .check(matches(hasDescendant(allOf(withId(itemExchangeName), withText(ExchangeName.BITFINEX.exchange)))))
+        // row 3 (bitstamp) should always be - as MockHttpInterceptor returns a HTTP 500
+        onView(withRecyclerView(recyclerView).atPosition(rowNumber))
+                .check(matches(hasDescendant(allOf(withId(itemExchangeName), withText(ExchangeName.BITSTAMP.exchange)))))
 
-        onView(withRecyclerView(recyclerView).atPosition(2))
+        onView(withRecyclerView(recyclerView).atPosition(rowNumber))
                 .check(matches(hasDescendant(allOf(withId(itemPrice), withText("-")))))
 
-        onView(withRecyclerView(recyclerView).atPosition(2))
+        onView(withRecyclerView(recyclerView).atPosition(rowNumber))
                 .check(matches(hasDescendant(allOf(withId(item24hourHigh), withText(context.getString(R.string.twenty_four_hour_high, "-"))))))
 
-        onView(withRecyclerView(recyclerView).atPosition(2))
+        onView(withRecyclerView(recyclerView).atPosition(rowNumber))
                 .check(matches(hasDescendant(allOf(withId(item24hourLow), withText(context.getString(R.string.twenty_four_hour_low, "-"))))))
     }
 

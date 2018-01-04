@@ -13,10 +13,15 @@ import io.reactivex.disposables.CompositeDisposable
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    protected var compositeDisposable = CompositeDisposable()
+    protected lateinit var compositeDisposable: CompositeDisposable
 
     open val layoutId: Int
         get() = 0
+
+    override fun onStart() {
+        super.onStart()
+        compositeDisposable = CompositeDisposable()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -25,8 +30,8 @@ abstract class BaseActivity : AppCompatActivity() {
         ButterKnife.bind(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
         compositeDisposable.dispose()
     }
 }

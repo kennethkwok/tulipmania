@@ -7,9 +7,14 @@ import io.reactivex.disposables.CompositeDisposable
  */
 
 abstract class BaseViewModel {
-    open var compositeDisposable: CompositeDisposable? = null
+    open val TAG = "BaseViewModel"
+
+    open lateinit var compositeDisposable: CompositeDisposable
 
     open fun onCreate() {
+    }
+
+    open fun onStart() {
         compositeDisposable = CompositeDisposable()
     }
 
@@ -17,9 +22,9 @@ abstract class BaseViewModel {
 
     open fun onPause() {}
 
-    open fun onStop() {}
-
-    open fun onDestroy() {
-        compositeDisposable?.dispose()
+    open fun onStop() {
+        compositeDisposable.dispose()
     }
+
+    open fun onDestroy() {}
 }

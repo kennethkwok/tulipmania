@@ -1,5 +1,6 @@
 package co.uk.kenkwok.tulipmania.dagger
 
+import co.uk.kenkwok.tulipmania.service.BitfinexService
 import co.uk.kenkwok.tulipmania.ui.main.MainActivity
 import co.uk.kenkwok.tulipmania.ui.main.MainActivityModule
 import dagger.Module
@@ -13,4 +14,7 @@ import dagger.android.ContributesAndroidInjector
 abstract class BuildersModule {
     @ContributesAndroidInjector(modules = arrayOf(MainActivityModule::class))
     internal abstract fun bindMainActivity(): MainActivity
+
+    @ContributesAndroidInjector
+    internal abstract fun bindWebSocketService(): BitfinexService
 }

@@ -1,9 +1,9 @@
 package co.uk.kenkwok.tulipmania.network
 
 import android.support.annotation.Nullable
+import co.uk.kenkwok.tulipmania.models.AnxTicker
 import co.uk.kenkwok.tulipmania.models.BitfinexTicker
 import co.uk.kenkwok.tulipmania.models.BitstampTicker
-import co.uk.kenkwok.tulipmania.models.AnxTicker
 import io.reactivex.Observable
 
 /**

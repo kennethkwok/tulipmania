@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit
 class NetworkServiceImpl(private val anxService: ANXApi,
                          private val bitstampService: BitstampAPI,
                          private val bitfinexService: BitfinexAPI) : NetworkService {
+
     /**
      * Gets the most recent ticker data every 15 seconds
      * @param currencyPair BTCUSD,BTCHKD,BTCEUR,BTCCAD,BTCAUD,BTCSGD,BTCJPY,BTCGBP,BTCNZD
@@ -68,5 +69,6 @@ class NetworkServiceImpl(private val anxService: ANXApi,
 
     companion object {
         private val TICKER_INTERVAL: Long = 15
+        private val TAG = "NetworkServiceImpl"
     }
 }

@@ -6,8 +6,6 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.rule.ServiceTestRule
 import android.support.test.runner.AndroidJUnit4
 import co.uk.kenkwok.tulipmania.models.BitfinexWebSocketTicker
-import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.schedulers.Schedulers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,10 +26,6 @@ class WebSocketServiceTest {
 
     @Before
     fun setup() {
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler {
-            _ -> Schedulers.trampoline()
-        }
-
         serviceIntent = Intent(InstrumentationRegistry.getTargetContext(), BitfinexService::class.java)
         binder = serviceRule.bindService(serviceIntent)
 

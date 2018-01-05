@@ -14,9 +14,9 @@ import co.uk.kenkwok.tulipmania.R.id.*
 import co.uk.kenkwok.tulipmania.models.ExchangeName
 import co.uk.kenkwok.tulipmania.testutils.RecyclerViewItemCountAssertion.Companion.withItemCount
 import co.uk.kenkwok.tulipmania.testutils.RecyclerViewMatcher
+import co.uk.kenkwok.tulipmania.testutils.WaitForViewMatcher.waitForView
 import org.hamcrest.Matchers.allOf
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,8 +40,8 @@ class MainActivityTest {
     @Test
     fun testTickerListDisplay() {
         // recyclerview
-        onView(withId(recyclerView)).check(matches(isDisplayed()))
-        onView(withId(recyclerView)).check(withItemCount(NUMBER_OF_ITEMS))
+        waitForView(withId(recyclerView), 10).check(matches(isDisplayed()))
+        waitForView(withId(recyclerView), 10).check(withItemCount(NUMBER_OF_ITEMS))
     }
 
     @Test
@@ -72,7 +72,7 @@ class MainActivityTest {
     /**
      * Ignore this test currently as it fails on buddybuild but runs perfectly locally
      */
-    @Ignore
+    @Test
     fun testTickerNetworkError() {
 
         // use UIAutomator to test for snackbar as BuddyBuild cannot match snackbar using espresso

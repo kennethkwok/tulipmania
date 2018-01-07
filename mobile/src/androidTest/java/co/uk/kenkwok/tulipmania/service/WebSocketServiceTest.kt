@@ -34,7 +34,7 @@ class WebSocketServiceTest {
 
     @Test
     fun testServiceSubscribed() {
-        val testObserver = service.getWebSocketTickerObservable().test()
+        val testObserver = service.getBitfinexBTCTickerObservable().test()
 
         testObserver.awaitTerminalEvent(1, TimeUnit.SECONDS)
 

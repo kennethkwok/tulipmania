@@ -9,6 +9,8 @@ import io.reactivex.Flowable
 interface BitfinexWebSocket {
     fun connectWebSocket(): Completable
     fun closeWebSocket(): Completable
-    fun subscribeToTicker(): Flowable<String>
+    fun subscribeToBTCTicker()
+    fun subscribeToETHTicker()
     fun unsubscribeFromTicker(channelId: String)
+    fun getTickerFlowable(): Flowable<String>
 }

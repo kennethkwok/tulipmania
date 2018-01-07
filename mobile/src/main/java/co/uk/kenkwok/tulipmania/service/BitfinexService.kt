@@ -23,14 +23,19 @@ class BitfinexService : Service() {
     @Inject lateinit var bitfinexWebSocket: BitfinexWebSocket
     private val TAG = BitfinexService::class.java.simpleName
     private val binder = WebSocketBinder()
-    private var isSubscribedToTicker = false
-    private var channelId = ""
+    private var btcChannelId = ""
+    private var ethChannelId = ""
     private var webSocketConnectedSubject = BehaviorSubject.create<Boolean>()   // emits most recent item + all subsequent items
 
-    private var webSocketTickerSubject = PublishSubject.create<BitfinexWebSocketTicker>()
+    private var btcTickerSubject = PublishSubject.create<BitfinexWebSocketTicker>()
+    private var ethTickerSubject = PublishSubject.create<BitfinexWebSocketTicker>()
 
-    fun getWebSocketTickerObservable(): Observable<BitfinexWebSocketTicker> {
-        return webSocketTickerSubject.hide()
+    fun getBitfinexBTCTickerObservable(): Observable<BitfinexWebSocketTicker> {
+        return btcTickerSubject.hide()
+    }
+
+    fun getBitfinexETHTickerObservable(): Observable<BitfinexWebSocketTicker> {
+        return ethTickerSubject.hide()
     }
 
     /**
@@ -68,8 +73,12 @@ class BitfinexService : Service() {
      * Unsubscribes from ticker updates when activity unbinds from service during onStop()
      */
     override fun onUnbind(intent: Intent): Boolean {
-        if (isSubscribedToTicker) {
-            bitfinexWebSocket.unsubscribeFromTicker(channelId)
+        if (btcChannelId.isNotEmpty()) {
+            bitfinexWebSocket.unsubscribeFromTicker(btcChannelId)
+        }
+
+        if (ethChannelId.isNotEmpty()) {
+            bitfinexWebSocket.unsubscribeFromTicker(ethChannelId)
         }
 
         return true
@@ -98,41 +107,64 @@ class BitfinexService : Service() {
         }
     }
 
-    internal fun reset() {
-        isSubscribedToTicker = false
-        channelId = ""
-    }
-
     internal fun subscribeToTickerUpdates() {
-        if (!isSubscribedToTicker) {
-            bitfinexWebSocket.subscribeToTicker().subscribe { text ->
-                if (text.contains("{")) {
-                    try {
-                        val response = Gson().fromJson<SubscribeResponse>(text, SubscribeResponse::class.java)
+        bitfinexWebSocket.getTickerFlowable().subscribe { text ->
+            if (text.contains("{")) {
+                try {
+                    val response = Gson().fromJson<SubscribeResponse>(text, SubscribeResponse::class.java)
 
-                        if (response.event == "subscribed") {
-                            Log.d(TAG, "subscribed")
-                            isSubscribedToTicker = true
-                        } else if (response.event == "unsubscribed") {
-                            Log.d(TAG, "unsubscribed!")
-                            reset()
-                        } else {
-                            Log.e(TAG, "error occurred: ${response.msg}, code: ${response.code}")
+                    if (response.event == "subscribed") {
+                        response.pair?.let { pair ->
+                            if (pair == "BTCUSD") {
+                                Log.d(TAG, "BTCUSD subscribed")
+                                response.chanId?.let { id ->
+                                    btcChannelId = id
+                                }
+                            } else {
+                                Log.d(TAG, "ETHUSD subscribed")
+                                response.chanId?.let { id ->
+                                    ethChannelId = id
+                                }
+                            }
                         }
-                    } catch (e: JsonSyntaxException) {
-                        // message from stream is not a SubscribeResponse
+
+                    } else if (response.event == "unsubscribed") {
+                        response.chanId?.let { chanId ->
+                            if (chanId == btcChannelId) {
+                                Log.d(TAG, "BTCUSD unsubscribed")
+                                btcChannelId = ""
+                            } else {
+                                Log.d(TAG, "ETHUSD unsubscribed")
+                                ethChannelId = ""
+                            }
+                        }
+                    } else {
+                        Log.e(TAG, "error occurred: ${response.msg}, code: ${response.code}")
                     }
-                } else if (text.contains("hb")) {
-                    // heartbeat to indicate websocket connected
+                } catch (e: JsonSyntaxException) {
+                    // message from stream is not a SubscribeResponse
+                    Log.e(TAG, e.message)
+                }
+            } else if (text.contains("hb")) {
+                // heartbeat to indicate websocket connected
+            } else {
+                // an actual socket message
+                val ticker = convertStreamToTicker(text)
+
+                if (ticker.channelId.toString() == btcChannelId) {
+                    btcTickerSubject.onNext(ticker)
                 } else {
-                    // an actual socket message
-                    val ticker = convertStreamToTicker(text)
-                    channelId = ticker.channelId.toString()
-                    webSocketTickerSubject.onNext(ticker)
+                    ethTickerSubject.onNext(ticker)
                 }
             }
-        } else {
-            Log.d(TAG, "Already subscribed to ticker")
+        }
+
+        if (btcChannelId.isEmpty()) {
+            bitfinexWebSocket.subscribeToBTCTicker()
+        }
+
+        if (ethChannelId.isEmpty()) {
+            bitfinexWebSocket.subscribeToETHTicker()
         }
     }
 

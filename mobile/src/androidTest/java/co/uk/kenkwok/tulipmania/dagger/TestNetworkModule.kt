@@ -69,7 +69,7 @@ class TestNetworkModule {
         val webSocket = Mockito.mock(BitfinexWebSocket::class.java)
         Mockito.`when`(webSocket.connectWebSocket()).thenReturn(Completable.complete())
         Mockito.`when`(webSocket.closeWebSocket()).thenReturn(Completable.complete())
-        Mockito.`when`(webSocket.subscribeToTicker()).thenReturn(
+        Mockito.`when`(webSocket.subscribeToBTCTicker()).thenReturn(
                 Flowable.just("[ 2, 236.62, 9.0029, 236.88, 7.1138, -1.02, 0, 236.52, 5191.36754297, 250.01, 220.05 ]"))
         return webSocket
     }

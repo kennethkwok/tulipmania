@@ -50,8 +50,8 @@ class MainViewModel(private val networkService: NetworkService,
     }
 
     fun subscribeWebSocketUpdates(service: BitfinexService) {
-        compositeDisposable.add(
-                service.getWebSocketTickerObservable().subscribe {
+        compositeDisposable.addAll(
+                service.getBitfinexBTCTickerObservable().subscribe({
                     ticker ->
                     Log.d(TAG, "price: ${ticker.ask}, 24h % change: ${ticker.dailyChangePercent}")
                     val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
@@ -61,7 +61,7 @@ class MainViewModel(private val networkService: NetworkService,
                             twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low.toString()))
                     )
                     tickerItemSubject.onNext(tickerItem)
-                }
+                })
         )
     }
 

@@ -17,11 +17,31 @@ import io.reactivex.schedulers.Schedulers
 class BitfinexWebSocketImpl(private val rxWebSocket: RxWebSocket): BitfinexWebSocket {
     private val TAG = BitfinexWebSocketImpl::class.java.simpleName
 
+    private val BITCOIN = "BTCUSD"
+    private val ETHEREUM = "ETHUSD"
+
+    private lateinit var tickerFlowable: Flowable<String>
+
+    override fun getTickerFlowable(): Flowable<String> {
+        return tickerFlowable
+    }
+
     override fun connectWebSocket(): Completable {
         if (!rxWebSocket.isConnected()) {
             rxWebSocket.connect()
             Log.d(TAG, "connectWebSocket() called")
         }
+
+        tickerFlowable = Flowable.create({ flowable ->
+            rxWebSocket.onTextMessage()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { event ->
+                        event.text?.let { text ->
+                            flowable.onNext(text)
+                        }
+                    }
+        }, BackpressureStrategy.LATEST)
 
         return Completable.create { c ->
             rxWebSocket.onOpen()
@@ -54,26 +74,12 @@ class BitfinexWebSocketImpl(private val rxWebSocket: RxWebSocket): BitfinexWebSo
         }
     }
 
-    override fun subscribeToTicker(): Flowable<String> {
-        rxWebSocket.sendMessage(SubscribeMessage("subscribe", "ticker", "BTCUSD"))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ success ->
-                    Log.d(TAG, "WebSocket subscribe: $success")
-                }, { t ->
-                    Log.d(TAG, "sendMessage failure: ${t.message}")
-                })
+    override fun subscribeToBTCTicker() {
+        subscribeToTicker(BITCOIN)
+    }
 
-        return Flowable.create({ flowable ->
-                rxWebSocket.onTextMessage()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe { event ->
-                            event.text?.let { text ->
-                                flowable.onNext(text)
-                            }
-                        }
-        }, BackpressureStrategy.LATEST)
+    override fun subscribeToETHTicker() {
+        subscribeToTicker(ETHEREUM)
     }
 
     override fun unsubscribeFromTicker(channelId: String) {
@@ -85,9 +91,14 @@ class BitfinexWebSocketImpl(private val rxWebSocket: RxWebSocket): BitfinexWebSo
                 })
     }
 
-    private fun getChannelId(text: String): String {
-        val csv = text.replace(regex = Regex("\\[|\\]"), replacement = "").replace(" ", "")
-        val value = csv.split(",")
-        return value[0]
+    private fun subscribeToTicker(tag: String) {
+        rxWebSocket.sendMessage(SubscribeMessage("subscribe", "ticker", tag))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ success ->
+                    Log.d(TAG, "$tag subscribe: $success")
+                }, { t ->
+                    Log.d(TAG, "sendMessage failure: ${t.message}")
+                })
     }
 }

@@ -31,7 +31,9 @@ data class UnsubscribeMessage(
 data class SubscribeResponse(
         val event: String,
         val status: String? = null,
+        val channel: String? = null,
         val chanId: String? = null,
         val msg: String? = null,
-        val code: String? = null
+        val code: String? = null,
+        val pair: String? = null
 )

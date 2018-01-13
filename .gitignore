@@ -57,4 +57,5 @@ mobile/src/main/assets/anx.json
 wear/src/main/assets/anx.json
 wear/src/main/assets/anx.json
 
-\.idea/modules\.xml
+# Android Studio
+.idea/

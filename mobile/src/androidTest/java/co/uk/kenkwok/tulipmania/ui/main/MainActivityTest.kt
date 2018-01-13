@@ -27,7 +27,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
 
-    private val NUMBER_OF_ITEMS = 4
+    private val NUMBER_OF_ITEMS = 6
 
     @Rule @JvmField val activityRule = ActivityTestRule(MainActivity::class.java)
     private lateinit var context: Context

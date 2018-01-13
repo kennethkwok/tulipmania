@@ -3,10 +3,7 @@ package co.uk.kenkwok.tulipmania.ui.main
 import android.content.Context
 import android.util.Log
 import co.uk.kenkwok.tulipmania.R
-import co.uk.kenkwok.tulipmania.models.CurrencyPair
-import co.uk.kenkwok.tulipmania.models.ExchangeName
-import co.uk.kenkwok.tulipmania.models.PriceItem
-import co.uk.kenkwok.tulipmania.models.RecyclerViewTickerItem
+import co.uk.kenkwok.tulipmania.models.*
 import co.uk.kenkwok.tulipmania.network.NetworkService
 import co.uk.kenkwok.tulipmania.service.BitfinexService
 import co.uk.kenkwok.tulipmania.ui.base.BaseViewModel
@@ -51,10 +48,19 @@ class MainViewModel(private val networkService: NetworkService,
 
     fun subscribeWebSocketUpdates(service: BitfinexService) {
         compositeDisposable.addAll(
-                service.getBitfinexBTCTickerObservable().subscribe({
-                    ticker ->
-                    Log.d(TAG, "price: ${ticker.ask}, 24h % change: ${ticker.dailyChangePercent}")
+                service.getBitfinexBTCTickerObservable().subscribe({ ticker ->
                     val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
+                            cryptoType = CryptoType.BTC,
+                            exchangeName = ExchangeName.BITFINEX,
+                            exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid.toString()),
+                            twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high.toString()),
+                            twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low.toString()))
+                    )
+                    tickerItemSubject.onNext(tickerItem)
+                }),
+                service.getBitfinexETHTickerObservable().subscribe({ ticker ->
+                    val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
+                            cryptoType = CryptoType.ETH,
                             exchangeName = ExchangeName.BITFINEX,
                             exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid.toString()),
                             twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high.toString()),
@@ -68,9 +74,12 @@ class MainViewModel(private val networkService: NetworkService,
     fun initTickerList(): Observable<ArrayList<RecyclerViewTickerItem>> {
         val tickerList = ArrayList<RecyclerViewTickerItem>()
         tickerList.add(RecyclerViewTickerItem(context.getString(R.string.btc_heading)))
-        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(exchangeName = ExchangeName.ANXPRO)))
-        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(exchangeName = ExchangeName.BITFINEX)))
-        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(exchangeName = ExchangeName.BITSTAMP)))
+        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.BTC, exchangeName = ExchangeName.ANXPRO)))
+        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.BTC, exchangeName = ExchangeName.BITFINEX)))
+        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.BTC, exchangeName = ExchangeName.BITSTAMP)))
+
+        tickerList.add(RecyclerViewTickerItem(context.getString(R.string.eth_heading)))
+        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.ETH, exchangeName = ExchangeName.BITFINEX)))
 
         return Observable.just(tickerList)
     }
@@ -87,6 +96,7 @@ class MainViewModel(private val networkService: NetworkService,
                         }
                         .subscribe { ticker ->
                             val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
+                                    cryptoType = CryptoType.BTC,
                                     exchangeName = ExchangeName.BITFINEX,
                                     exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
                                     twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),
@@ -109,6 +119,7 @@ class MainViewModel(private val networkService: NetworkService,
                         }
                         .subscribe { ticker ->
                             val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
+                                    cryptoType = CryptoType.BTC,
                                     exchangeName = ExchangeName.BITSTAMP,
                                     exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
                                     twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),
@@ -135,14 +146,15 @@ class MainViewModel(private val networkService: NetworkService,
                             Observable.empty()
                         }
                         .subscribe { ticker ->
-                            tickerItemSubject.onNext(convertCurrencyPairToTickerItem(ticker.data.btcusd))
+                            tickerItemSubject.onNext(convertCurrencyPairToTickerItem(ticker.data.btcusd, CryptoType.BTC))
                         }
 
         )
     }
 
-    private fun convertCurrencyPairToTickerItem(pair: CurrencyPair): RecyclerViewTickerItem {
+    private fun convertCurrencyPairToTickerItem(pair: CurrencyPair, type: CryptoType): RecyclerViewTickerItem {
         return RecyclerViewTickerItem(tickerItem = PriceItem(
+                cryptoType = type,
                 exchangeName = ExchangeName.ANXPRO,
                 exchangePrice = CurrencyUtils.convertDisplayCurrency(pair.sell.displayShort),
                 twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(pair.high.displayShort),

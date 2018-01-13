@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import co.uk.kenkwok.tulipmania.R
+import co.uk.kenkwok.tulipmania.models.CryptoType
 import co.uk.kenkwok.tulipmania.models.ExchangeName
 import co.uk.kenkwok.tulipmania.models.PriceItem
 import co.uk.kenkwok.tulipmania.models.RecyclerViewTickerItem
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.section_heading_viewholder.view.*
 class RecyclerViewAdapter(private var exchangeList: ArrayList<RecyclerViewTickerItem>) : RecyclerView.Adapter<BaseViewHolder>() {
 
     fun updatePriceItem(item: RecyclerViewTickerItem) {
-        val index = containsExchangeName(item.tickerItem?.exchangeName)
+        val index = containsExchangeName(item.tickerItem?.exchangeName, item.tickerItem?.cryptoType)
 
         if (index < 0) {
             exchangeList.add(item)
@@ -51,16 +52,17 @@ class RecyclerViewAdapter(private var exchangeList: ArrayList<RecyclerViewTicker
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0) { 0 } else { 1 }
+        return if (exchangeList[position].sectionHeading.isNotEmpty()) { 0 } else { 1 }
     }
 
-    private fun containsExchangeName(name: ExchangeName?): Int {
+    private fun containsExchangeName(name: ExchangeName?, type: CryptoType?): Int {
         if (exchangeList.size == 0) {
             return -1
         }
 
         for ((i, item) in exchangeList.withIndex()) {
-            if (item.tickerItem?.exchangeName == name) {
+            if ((item.tickerItem?.exchangeName == name) &&
+                    (item.tickerItem?.cryptoType == type)) {
                 return i
             }
         }

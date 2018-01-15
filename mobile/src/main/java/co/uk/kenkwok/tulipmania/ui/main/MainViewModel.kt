@@ -33,9 +33,6 @@ class MainViewModel(private val networkService: NetworkService,
         super.onStart()
         getAnxTicker()
         getBitstampTicker()
-
-        // disable bitfinex ticker for websockets
-        // getBitfinexTicker()
     }
 
     override fun onStop() {
@@ -80,6 +77,7 @@ class MainViewModel(private val networkService: NetworkService,
 
         tickerList.add(RecyclerViewTickerItem(context.getString(R.string.eth_heading)))
         tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.ETH, exchangeName = ExchangeName.BITFINEX)))
+        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.ETH, exchangeName = ExchangeName.BITSTAMP)))
 
         return Observable.just(tickerList)
     }
@@ -108,10 +106,11 @@ class MainViewModel(private val networkService: NetworkService,
     }
 
     private fun getBitstampTicker() {
-        val currencyPair = "btcusd"
-        compositeDisposable.add(
+        val bitcoinPair = "btcusd"
+        val ethereumPair = "ethusd"
+        compositeDisposable.addAll(
                 networkService
-                        .getBitstampTickerData(currencyPair)
+                        .getBitstampTickerData(bitcoinPair)
                         .onErrorResumeNext { throwable: Throwable ->
                             Log.e(TAG, throwable.message)
                             tickerItemSubject.onNext(RecyclerViewTickerItem(error = Throwable(ExchangeName.BITSTAMP.exchange)))
@@ -126,7 +125,25 @@ class MainViewModel(private val networkService: NetworkService,
                                     twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low))
                             )
                             tickerItemSubject.onNext(tickerItem)
+                        },
+                networkService.getBitstampTickerData(ethereumPair)
+                        .onErrorResumeNext { throwable: Throwable ->
+                            Log.e(TAG, throwable.message)
+                            tickerItemSubject.onNext(RecyclerViewTickerItem(error = Throwable(ExchangeName.BITSTAMP.exchange)))
+                            Observable.empty()
                         }
+                        .subscribe { ticker ->
+                            val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
+                                    cryptoType = CryptoType.ETH,
+                                    exchangeName = ExchangeName.BITSTAMP,
+                                    exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
+                                    twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),
+                                    twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low))
+                            )
+                            tickerItemSubject.onNext(tickerItem)
+                        }
+
+
         )
     }
 

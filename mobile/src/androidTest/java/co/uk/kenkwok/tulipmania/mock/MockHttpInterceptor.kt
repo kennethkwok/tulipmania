@@ -35,17 +35,15 @@ class MockHttpInterceptor: Interceptor {
                     .code(500)
                     .build()
 
-        } else if (path.contains("ws")) {
-            // bitfinex websocket - sends "test" as the default message
-            val response = Response.Builder()
-                    .body(ResponseBody.create(MediaType.parse("text/plain"), ""))
-                    .message("text")
+        } else if (path.contains("/api/v2/ticker/ethusd")) {
+            json = getFileAsString("bitstamp_api_sample.json")
+            return Response.Builder()
+                    .body(ResponseBody.create(MEDIA_JSON, json))
                     .request(chain.request())
                     .protocol(Protocol.HTTP_2)
+                    .message("")
                     .code(200)
                     .build()
-            println(response.message())
-            return response
 
         } else {
             json = getFileAsString("anx_api_sample.json")

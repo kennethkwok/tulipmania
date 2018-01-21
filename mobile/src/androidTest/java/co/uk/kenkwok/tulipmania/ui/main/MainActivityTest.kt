@@ -27,7 +27,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
 
-    private val NUMBER_OF_ITEMS = 7
+    private val NUMBER_OF_ITEMS = 8
 
     @Rule @JvmField val activityRule = ActivityTestRule(MainActivity::class.java)
     private lateinit var context: Context
@@ -51,6 +51,13 @@ class MainActivityTest {
                         withId(sectionHeading),
                         withEffectiveVisibility(Visibility.VISIBLE),
                         withText(context.getString(R.string.btc_heading))
+                ))))
+
+        onView(withRecyclerView(recyclerView).atPosition(4))
+                .check(matches(hasDescendant(allOf(
+                        withId(sectionHeading),
+                        withEffectiveVisibility(Visibility.VISIBLE),
+                        withText(context.getString(R.string.eth_heading))
                 ))))
     }
 

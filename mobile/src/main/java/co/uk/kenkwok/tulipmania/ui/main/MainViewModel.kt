@@ -76,6 +76,7 @@ class MainViewModel(private val networkService: NetworkService,
         tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.BTC, exchangeName = ExchangeName.BITSTAMP)))
 
         tickerList.add(RecyclerViewTickerItem(context.getString(R.string.eth_heading)))
+        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.ETH, exchangeName = ExchangeName.ANXPRO)))
         tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.ETH, exchangeName = ExchangeName.BITFINEX)))
         tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.ETH, exchangeName = ExchangeName.BITSTAMP)))
 
@@ -149,7 +150,7 @@ class MainViewModel(private val networkService: NetworkService,
 
     private fun getAnxTicker() {
         val currencyPair = "BTCUSD"
-        val extraCcyPairs = "BTCHKD"
+        val extraCcyPairs = "BTCHKD,ETHUSD"
         val data = "/$currencyPair/money/ticker"
         val apiCredentials = ANXCredentialUtils.getApiCredentials(context)
         val restSign = NetworkUtils.generateRestSign(apiCredentials.apiSecret, data.toByteArray())
@@ -163,6 +164,7 @@ class MainViewModel(private val networkService: NetworkService,
                             Observable.empty()
                         }
                         .subscribe { ticker ->
+                            tickerItemSubject.onNext(convertCurrencyPairToTickerItem(ticker.data.ethusd, CryptoType.ETH))
                             tickerItemSubject.onNext(convertCurrencyPairToTickerItem(ticker.data.btcusd, CryptoType.BTC))
                         }
 

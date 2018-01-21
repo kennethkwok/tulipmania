@@ -14,6 +14,8 @@ data class AnxTicker(
 data class Data(
         @SerializedName("BTCHKD")
         val btchkd : CurrencyPair,
+        @SerializedName("ETHUSD")
+        val ethusd : CurrencyPair,
         @SerializedName("BTCUSD")
         val btcusd : CurrencyPair
 )

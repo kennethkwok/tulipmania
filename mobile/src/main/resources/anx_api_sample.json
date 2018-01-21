@@ -120,6 +120,66 @@
       },
       "now": "1511526292293000",
       "dataUpdateTime": "1511526286775000"
+    },
+    "ETHUSD": {
+      "high": {
+        "display_short": "8,898.84 USD",
+        "value_int": "889883525",
+        "currency": "USD",
+        "display": "8,898.83525 USD",
+        "value": "8898.83525"
+      },
+      "low": {
+        "display_short": "8,047.23 USD",
+        "value_int": "804722736",
+        "currency": "USD",
+        "display": "8,047.22736 USD",
+        "value": "8047.22736"
+      },
+      "avg": {
+        "display_short": "8,215.03 USD",
+        "value_int": "821503442",
+        "currency": "USD",
+        "display": "8,215.03442 USD",
+        "value": "8215.03442"
+      },
+      "vwap": {
+        "display_short": "1.41 USD",
+        "value_int": "140927",
+        "currency": "USD",
+        "display": "1.40927 USD",
+        "value": "1.40927"
+      },
+      "vol": {
+        "display_short": "73.86 BTC",
+        "value_int": "7385812540",
+        "currency": "BTC",
+        "display": "73.85812540 BTC",
+        "value": "73.85812540"
+      },
+      "last": {
+        "display_short": "8,684.63 USD",
+        "value_int": "868463429",
+        "currency": "USD",
+        "display": "8,684.63429 USD",
+        "value": "8684.63429"
+      },
+      "buy": {
+        "display_short": "8,411.22 USD",
+        "value_int": "841122090",
+        "currency": "USD",
+        "display": "8,411.22090 USD",
+        "value": "8411.22090"
+      },
+      "sell": {
+        "display_short": "8,699.95 USD",
+        "value_int": "869995038",
+        "currency": "USD",
+        "display": "8,699.95038 USD",
+        "value": "8699.95038"
+      },
+      "now": "1511526292293000",
+      "dataUpdateTime": "1511526286775000"
     }
   }
 }

@@ -102,7 +102,7 @@ class NetworkServiceImplTest {
         )
 
         return AnxTicker(result = "",
-                data = Data(currencyPair, currencyPair))
+                data = Data(currencyPair, currencyPair, currencyPair))
     }
 
     private fun generateBitstampTicker(): BitstampTicker {

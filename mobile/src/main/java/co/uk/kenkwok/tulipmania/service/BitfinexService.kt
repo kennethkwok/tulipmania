@@ -6,6 +6,7 @@ import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 import co.uk.kenkwok.tulipmania.models.BitfinexWebSocketTicker
+import co.uk.kenkwok.tulipmania.models.CryptoType
 import co.uk.kenkwok.tulipmania.models.SubscribeResponse
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -25,10 +26,12 @@ class BitfinexService : Service() {
     private val binder = WebSocketBinder()
     private var btcChannelId = ""
     private var ethChannelId = ""
+    private var xrpChannelId = ""
     private var webSocketConnectedSubject = BehaviorSubject.create<Boolean>()   // emits most recent item + all subsequent items
 
     private var btcTickerSubject = PublishSubject.create<BitfinexWebSocketTicker>()
     private var ethTickerSubject = PublishSubject.create<BitfinexWebSocketTicker>()
+    private var xrpTickerSubject = PublishSubject.create<BitfinexWebSocketTicker>()
 
     fun getBitfinexBTCTickerObservable(): Observable<BitfinexWebSocketTicker> {
         return btcTickerSubject.hide()
@@ -36,6 +39,10 @@ class BitfinexService : Service() {
 
     fun getBitfinexETHTickerObservable(): Observable<BitfinexWebSocketTicker> {
         return ethTickerSubject.hide()
+    }
+
+    fun getBitfinexXRPTickerObservable(): Observable<BitfinexWebSocketTicker> {
+        return xrpTickerSubject.hide()
     }
 
     /**
@@ -81,6 +88,10 @@ class BitfinexService : Service() {
             bitfinexWebSocket.unsubscribeFromTicker(ethChannelId)
         }
 
+        if (xrpChannelId.isNotEmpty()) {
+            bitfinexWebSocket.unsubscribeFromTicker(xrpChannelId)
+        }
+
         return true
     }
 
@@ -120,10 +131,15 @@ class BitfinexService : Service() {
                                 response.chanId?.let { id ->
                                     btcChannelId = id
                                 }
-                            } else {
+                            } else if (pair == "ETHUSD") {
                                 Log.d(TAG, "ETHUSD subscribed")
                                 response.chanId?.let { id ->
                                     ethChannelId = id
+                                }
+                            } else {
+                                Log.d(TAG, "XRPUSD subscribed")
+                                response.chanId?.let { id ->
+                                    xrpChannelId = id
                                 }
                             }
                         }
@@ -133,9 +149,12 @@ class BitfinexService : Service() {
                             if (chanId == btcChannelId) {
                                 Log.d(TAG, "BTCUSD unsubscribed")
                                 btcChannelId = ""
-                            } else {
+                            } else if (chanId == ethChannelId) {
                                 Log.d(TAG, "ETHUSD unsubscribed")
                                 ethChannelId = ""
+                            } else {
+                                Log.d(TAG, "XRPUSD unsubscribed")
+                                xrpChannelId = ""
                             }
                         }
                     } else {
@@ -153,18 +172,24 @@ class BitfinexService : Service() {
 
                 if (ticker.channelId.toString() == btcChannelId) {
                     btcTickerSubject.onNext(ticker)
-                } else {
+                } else if (ticker.channelId.toString() == ethChannelId) {
                     ethTickerSubject.onNext(ticker)
+                } else {
+                    xrpTickerSubject.onNext(ticker)
                 }
             }
         }
 
         if (btcChannelId.isEmpty()) {
-            bitfinexWebSocket.subscribeToBTCTicker()
+            bitfinexWebSocket.subscribeToTicker(CryptoType.BTC)
         }
 
         if (ethChannelId.isEmpty()) {
-            bitfinexWebSocket.subscribeToETHTicker()
+            bitfinexWebSocket.subscribeToTicker(CryptoType.ETH)
+        }
+
+        if (xrpChannelId.isEmpty()) {
+            bitfinexWebSocket.subscribeToTicker(CryptoType.XRP)
         }
     }
 

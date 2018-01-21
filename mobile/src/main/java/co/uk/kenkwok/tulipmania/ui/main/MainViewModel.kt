@@ -64,6 +64,16 @@ class MainViewModel(private val networkService: NetworkService,
                             twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low.toString()))
                     )
                     tickerItemSubject.onNext(tickerItem)
+                }),
+                service.getBitfinexXRPTickerObservable().subscribe({ ticker ->
+                    val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
+                            cryptoType = CryptoType.XRP,
+                            exchangeName = ExchangeName.BITFINEX,
+                            exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid.toString()),
+                            twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high.toString()),
+                            twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low.toString()))
+                    )
+                    tickerItemSubject.onNext(tickerItem)
                 })
         )
     }
@@ -79,6 +89,10 @@ class MainViewModel(private val networkService: NetworkService,
         tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.ETH, exchangeName = ExchangeName.ANXPRO)))
         tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.ETH, exchangeName = ExchangeName.BITFINEX)))
         tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.ETH, exchangeName = ExchangeName.BITSTAMP)))
+
+        tickerList.add(RecyclerViewTickerItem(context.getString(R.string.xrp_heading)))
+        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.XRP, exchangeName = ExchangeName.BITFINEX)))
+        tickerList.add(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.XRP, exchangeName = ExchangeName.BITSTAMP)))
 
         return Observable.just(tickerList)
     }
@@ -109,6 +123,7 @@ class MainViewModel(private val networkService: NetworkService,
     private fun getBitstampTicker() {
         val bitcoinPair = "btcusd"
         val ethereumPair = "ethusd"
+        val ripplePair = "xrpusd"
         compositeDisposable.addAll(
                 networkService
                         .getBitstampTickerData(bitcoinPair)
@@ -136,6 +151,22 @@ class MainViewModel(private val networkService: NetworkService,
                         .subscribe { ticker ->
                             val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
                                     cryptoType = CryptoType.ETH,
+                                    exchangeName = ExchangeName.BITSTAMP,
+                                    exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
+                                    twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),
+                                    twentyFourHourLow = CurrencyUtils.convertDisplayCurrency(ticker.low))
+                            )
+                            tickerItemSubject.onNext(tickerItem)
+                        },
+                networkService.getBitstampTickerData(ripplePair)
+                        .onErrorResumeNext { throwable: Throwable ->
+                            Log.e(TAG, throwable.message)
+                            tickerItemSubject.onNext(RecyclerViewTickerItem(error = Throwable(ExchangeName.BITSTAMP.exchange)))
+                            Observable.empty()
+                        }
+                        .subscribe { ticker ->
+                            val tickerItem = RecyclerViewTickerItem(tickerItem = PriceItem(
+                                    cryptoType = CryptoType.XRP,
                                     exchangeName = ExchangeName.BITSTAMP,
                                     exchangePrice = CurrencyUtils.convertDisplayCurrency(ticker.bid),
                                     twentyFourHourHigh = CurrencyUtils.convertDisplayCurrency(ticker.high),

@@ -19,4 +19,5 @@
     <string name="btc_heading">Bitcoin (BTC)</string>
     <string name="eth_heading">Ethereum (ETC)</string>
     <string name="ltc_heading">Litecoin (LTC)</string>
+    <string name="xrp_heading">Ripple (XRP)</string>
 </resources>

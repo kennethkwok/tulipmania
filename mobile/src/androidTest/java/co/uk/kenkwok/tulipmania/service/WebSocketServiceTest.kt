@@ -34,7 +34,7 @@ class WebSocketServiceTest {
 
     @Test
     fun testServiceSubscribed() {
-        val testObserver = service.getBitfinexETHTickerObservable().test()
+        val testObserver = service.getBitfinexXRPTickerObservable().test()
 
         testObserver.awaitTerminalEvent(1, TimeUnit.SECONDS)
 

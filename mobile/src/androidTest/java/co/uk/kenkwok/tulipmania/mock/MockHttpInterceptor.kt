@@ -35,7 +35,7 @@ class MockHttpInterceptor: Interceptor {
                     .code(500)
                     .build()
 
-        } else if (path.contains("/api/v2/ticker/ethusd")) {
+        } else if (path.contains("/api/v2/ticker/ethusd") || path.contains("/api/v2/ticker/xrpusd")) {
             json = getFileAsString("bitstamp_api_sample.json")
             return Response.Builder()
                     .body(ResponseBody.create(MEDIA_JSON, json))

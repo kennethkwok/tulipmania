@@ -3,6 +3,7 @@ package co.uk.kenkwok.tulipmania.service
 import android.util.Log
 import co.uk.kenkwok.tulipmania.library.websocket.RxWebSocket
 import co.uk.kenkwok.tulipmania.library.websocket.entities.SocketOpenEvent
+import co.uk.kenkwok.tulipmania.models.CryptoType
 import co.uk.kenkwok.tulipmania.models.SubscribeMessage
 import co.uk.kenkwok.tulipmania.models.UnsubscribeMessage
 import io.reactivex.BackpressureStrategy
@@ -19,6 +20,7 @@ class BitfinexWebSocketImpl(private val rxWebSocket: RxWebSocket): BitfinexWebSo
 
     private val BITCOIN = "BTCUSD"
     private val ETHEREUM = "ETHUSD"
+    private val RIPPLE = "XRPUSD"
 
     private lateinit var tickerFlowable: Flowable<String>
 
@@ -74,12 +76,15 @@ class BitfinexWebSocketImpl(private val rxWebSocket: RxWebSocket): BitfinexWebSo
         }
     }
 
-    override fun subscribeToBTCTicker() {
-        subscribeToTicker(BITCOIN)
-    }
-
-    override fun subscribeToETHTicker() {
-        subscribeToTicker(ETHEREUM)
+    override fun subscribeToTicker(type: CryptoType) {
+        when (type) {
+            CryptoType.BTC -> subscribeToTicker(BITCOIN)
+            CryptoType.ETH -> subscribeToTicker(ETHEREUM)
+            CryptoType.XRP -> subscribeToTicker(RIPPLE)
+            else -> {
+                Log.e(TAG, "$type not supported currently!")
+            }
+        }
     }
 
     override fun unsubscribeFromTicker(channelId: String) {

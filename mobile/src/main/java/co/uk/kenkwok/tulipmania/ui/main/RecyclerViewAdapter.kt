@@ -33,9 +33,15 @@ class RecyclerViewAdapter(private var exchangeList: ArrayList<RecyclerViewTicker
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         if (holder is PriceItemViewHolder) {
-            exchangeList[position].tickerItem?.let { ticker -> holder.setData(ticker) }
+            exchangeList[position].tickerItem?.let { ticker ->
+                if (exchangeList[position].error != null) {
+                    holder.setError(ticker)
+                } else {
+                    holder.setData(ticker)
+                }
+            }
         } else if (holder is SectionHeadingViewHolder) {
-            exchangeList[position].sectionHeading?.let { heading -> holder.setData(heading) }
+            holder.setData(exchangeList[position].sectionHeading)
         }
     }
 
@@ -72,6 +78,20 @@ class RecyclerViewAdapter(private var exchangeList: ArrayList<RecyclerViewTicker
 
     class PriceItemViewHolder(val context: Context, view: View): BaseViewHolder(view) {
         fun setData(priceItem: PriceItem) {
+            if (priceItem.exchangePrice == "-") {
+                view.itemBackground.setBackgroundResource(R.color.ticker_cell_background_no_data)
+            } else {
+                view.itemBackground.setBackgroundResource(R.color.ticker_cell_background_normal)
+            }
+
+            view.itemExchangeName.text = priceItem.exchangeName.exchange
+            view.itemPrice.text = priceItem.exchangePrice
+            view.item24hourHigh.text = context.getString(R.string.twenty_four_hour_high, priceItem.twentyFourHourHigh)
+            view.item24hourLow.text = context.getString(R.string.twenty_four_hour_low, priceItem.twentyFourHourLow)
+        }
+
+        fun setError(priceItem: PriceItem) {
+            view.itemBackground.setBackgroundResource(R.color.ticker_cell_background_error)
             view.itemExchangeName.text = priceItem.exchangeName.exchange
             view.itemPrice.text = priceItem.exchangePrice
             view.item24hourHigh.text = context.getString(R.string.twenty_four_hour_high, priceItem.twentyFourHourHigh)

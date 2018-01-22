@@ -8,10 +8,12 @@
     android:elevation="@dimen/cardview_elevation"
     tools:context="co.uk.kenkwok.tulipmania.ui.main.MainActivity">
 
-    <LinearLayout 
+    <LinearLayout
+        android:id="@+id/itemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_small"
+        android:background="@color/ticker_cell_background_no_data"
         android:orientation="vertical">
 
         <TextView

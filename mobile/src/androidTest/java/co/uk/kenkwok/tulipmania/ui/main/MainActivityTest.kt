@@ -7,11 +7,11 @@ import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import android.support.test.uiautomator.UiDevice
-import android.support.test.uiautomator.UiSelector
+import android.support.v4.content.ContextCompat
 import co.uk.kenkwok.tulipmania.R
 import co.uk.kenkwok.tulipmania.R.id.*
 import co.uk.kenkwok.tulipmania.models.ExchangeName
+import co.uk.kenkwok.tulipmania.testutils.CustomMatcher.Companion.withBackgroundColour
 import co.uk.kenkwok.tulipmania.testutils.RecyclerViewItemCountAssertion.Companion.withItemCount
 import co.uk.kenkwok.tulipmania.testutils.RecyclerViewMatcher
 import co.uk.kenkwok.tulipmania.testutils.WaitForViewMatcher.waitForView
@@ -81,11 +81,6 @@ class MainActivityTest {
      */
     @Test
     fun testTickerNetworkError() {
-
-        // use UIAutomator to test for snackbar as BuddyBuild cannot match snackbar using espresso
-        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        val snackbarTextView = device.findObject(UiSelector().text(context.getString(R.string.network_error, ExchangeName.BITSTAMP.exchange)))
-        snackbarTextView?.text ?: throw RuntimeException("Cannot find snackbar")
         val rowNumber = 3
 
         // row 3 (bitstamp) should always be - as MockHttpInterceptor returns a HTTP 500
@@ -100,6 +95,11 @@ class MainActivityTest {
 
         onView(withRecyclerView(recyclerView).atPosition(rowNumber))
                 .check(matches(hasDescendant(allOf(withId(item24hourLow), withText(context.getString(R.string.twenty_four_hour_low, "-"))))))
+
+        // NOTE: pass the colour, not the colour res ID
+        onView(withRecyclerView(recyclerView).atPosition(rowNumber))
+                .check(matches(hasDescendant(allOf(withId(itemBackground),
+                        withBackgroundColour(ContextCompat.getColor(context, R.color.ticker_cell_background_error))))))
     }
 
     fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {

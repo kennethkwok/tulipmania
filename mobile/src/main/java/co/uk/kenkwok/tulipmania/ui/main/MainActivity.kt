@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
-import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import co.uk.kenkwok.tulipmania.R
@@ -89,19 +88,7 @@ class MainActivity : BaseActivity() {
     }
 
     fun setTickerItem(item: RecyclerViewTickerItem) {
-        item.tickerItem?.let {
-            adapter.updatePriceItem(item)
-        }
-
-        item.error?.let { throwable ->
-            displayError(throwable)
-        }
-    }
-
-    fun displayError(t: Throwable) {
-        t.message?.let { exchangeName ->
-            Snackbar.make(coordinatorLayout, getString(R.string.network_error, exchangeName), Snackbar.LENGTH_LONG).show()
-        }
+        adapter.updatePriceItem(item)
     }
 
     companion object {

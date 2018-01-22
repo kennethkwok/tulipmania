@@ -25,22 +25,10 @@ class MainViewModel(private val networkService: NetworkService,
     val tickerObservable: Observable<RecyclerViewTickerItem>
         get() = tickerItemSubject.hide()
 
-    override fun onCreate() {
-        super.onCreate()
-    }
-
     override fun onStart() {
         super.onStart()
         getAnxTicker()
         getBitstampTicker()
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     fun subscribeWebSocketUpdates(service: BitfinexService) {
@@ -129,7 +117,8 @@ class MainViewModel(private val networkService: NetworkService,
                         .getBitstampTickerData(bitcoinPair)
                         .onErrorResumeNext { throwable: Throwable ->
                             Log.e(TAG, throwable.message)
-                            tickerItemSubject.onNext(RecyclerViewTickerItem(error = Throwable(ExchangeName.BITSTAMP.exchange)))
+                            tickerItemSubject.onNext(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.BTC, exchangeName = ExchangeName.BITSTAMP),
+                                    error = Throwable(ExchangeName.BITSTAMP.exchange)))
                             Observable.empty()
                         }
                         .subscribe { ticker ->
@@ -145,7 +134,8 @@ class MainViewModel(private val networkService: NetworkService,
                 networkService.getBitstampTickerData(ethereumPair)
                         .onErrorResumeNext { throwable: Throwable ->
                             Log.e(TAG, throwable.message)
-                            tickerItemSubject.onNext(RecyclerViewTickerItem(error = Throwable(ExchangeName.BITSTAMP.exchange)))
+                            tickerItemSubject.onNext(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.ETH, exchangeName = ExchangeName.BITSTAMP),
+                                    error = Throwable(ExchangeName.BITSTAMP.exchange)))
                             Observable.empty()
                         }
                         .subscribe { ticker ->
@@ -161,7 +151,8 @@ class MainViewModel(private val networkService: NetworkService,
                 networkService.getBitstampTickerData(ripplePair)
                         .onErrorResumeNext { throwable: Throwable ->
                             Log.e(TAG, throwable.message)
-                            tickerItemSubject.onNext(RecyclerViewTickerItem(error = Throwable(ExchangeName.BITSTAMP.exchange)))
+                            tickerItemSubject.onNext(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.XRP, exchangeName = ExchangeName.BITSTAMP),
+                                    error = Throwable(ExchangeName.BITSTAMP.exchange)))
                             Observable.empty()
                         }
                         .subscribe { ticker ->
@@ -174,8 +165,6 @@ class MainViewModel(private val networkService: NetworkService,
                             )
                             tickerItemSubject.onNext(tickerItem)
                         }
-
-
         )
     }
 
@@ -191,7 +180,10 @@ class MainViewModel(private val networkService: NetworkService,
                         .getAnxTickerData(apiCredentials.apiKey, restSign, currencyPair, extraCcyPairs)
                         .onErrorResumeNext { throwable: Throwable ->
                             Log.e(TAG, throwable.message)
-                            tickerItemSubject.onNext(RecyclerViewTickerItem(error = Throwable(ExchangeName.ANXPRO.exchange)))
+                            tickerItemSubject.onNext(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.BTC, exchangeName = ExchangeName.ANXPRO),
+                                    error = Throwable(ExchangeName.ANXPRO.exchange)))
+                            tickerItemSubject.onNext(RecyclerViewTickerItem(tickerItem = PriceItem(cryptoType = CryptoType.ETH, exchangeName = ExchangeName.ANXPRO),
+                                    error = Throwable(ExchangeName.ANXPRO.exchange)))
                             Observable.empty()
                         }
                         .subscribe { ticker ->

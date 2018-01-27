@@ -11,6 +11,11 @@
     <!-- error message -->
     <string name="network_error">Error getting ticker data from %1$s</string>
 
+    <!-- ticker status -->
+    <string name="status_connecting">CONNECTING</string>
+    <string name="status_connected">CONNECTED</string>
+    <string name="status_disconnected">DISCONNECTED</string>
+
     <!-- price item viewholder -->
     <string name="twenty_four_hour_high">24h high: %1$s</string>
     <string name="twenty_four_hour_low">24h low: %1$s</string>

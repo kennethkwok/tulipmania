@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="@dimen/ticker_status_width"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_small"
+    android:background="@drawable/ticker_status_border">
+
+    <ImageView
+        android:id="@+id/tickerStatusCircle"
+        android:layout_width="@dimen/ticker_status_circle_size"
+        android:layout_height="@dimen/ticker_status_circle_size"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="@dimen/padding_xsmall"
+        android:background="@drawable/ticker_status_connecting"/>
+
+    <TextView
+        android:id="@+id/tickerStatusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textSize="@dimen/textsize_small"
+        android:gravity="center"
+        tools:text="@string/status_disconnected"/>
+
+</LinearLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ConnectionStatus">
+        <attr name="connection_state" format="enum">
+            <enum name="connected" value="0" />
+            <enum name="connecting" value="1" />
+            <enum name="disconnected" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>

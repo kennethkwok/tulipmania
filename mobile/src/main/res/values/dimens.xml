@@ -13,7 +13,13 @@
     <dimen name="textsize_xlarge">24sp</dimen>
     <dimen name="textsize_large">20sp</dimen>
     <dimen name="textsize_medium">14sp</dimen>
+    <dimen name="textsize_small">10sp</dimen>
 
     <!-- cardview -->
     <dimen name="cardview_elevation">4dp</dimen>
+
+    <!-- ticker status view -->
+    <dimen name="ticker_status_circle_size">8dp</dimen>
+    <dimen name="ticker_status_corner_radius">0dp</dimen>
+    <dimen name="ticker_status_width">110dp</dimen>
 </resources>

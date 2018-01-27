@@ -6,10 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import co.uk.kenkwok.tulipmania.R
-import co.uk.kenkwok.tulipmania.models.CryptoType
-import co.uk.kenkwok.tulipmania.models.ExchangeName
-import co.uk.kenkwok.tulipmania.models.PriceItem
-import co.uk.kenkwok.tulipmania.models.RecyclerViewTickerItem
+import co.uk.kenkwok.tulipmania.models.*
 import co.uk.kenkwok.tulipmania.ui.base.BaseViewHolder
 import kotlinx.android.synthetic.main.price_item_viewholder.view.*
 import kotlinx.android.synthetic.main.section_heading_viewholder.view.*
@@ -79,9 +76,9 @@ class RecyclerViewAdapter(private var exchangeList: ArrayList<RecyclerViewTicker
     class PriceItemViewHolder(val context: Context, view: View): BaseViewHolder(view) {
         fun setData(priceItem: PriceItem) {
             if (priceItem.exchangePrice == "-") {
-                view.itemBackground.setBackgroundResource(R.color.ticker_cell_background_no_data)
+                view.itemTickerStatus.connectionStatus = ConnectionStatus.CONNECTING
             } else {
-                view.itemBackground.setBackgroundResource(R.color.ticker_cell_background_normal)
+                view.itemTickerStatus.connectionStatus = ConnectionStatus.CONNECTED
             }
 
             view.itemExchangeName.text = priceItem.exchangeName.exchange
@@ -91,7 +88,7 @@ class RecyclerViewAdapter(private var exchangeList: ArrayList<RecyclerViewTicker
         }
 
         fun setError(priceItem: PriceItem) {
-            view.itemBackground.setBackgroundResource(R.color.ticker_cell_background_error)
+            view.itemTickerStatus.connectionStatus = ConnectionStatus.DISCONNECTED
             view.itemExchangeName.text = priceItem.exchangeName.exchange
             view.itemPrice.text = priceItem.exchangePrice
             view.item24hourHigh.text = context.getString(R.string.twenty_four_hour_high, priceItem.twentyFourHourHigh)
